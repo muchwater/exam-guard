@@ -25,7 +25,7 @@ from common.events import Person
 def generate(stats: dict, fps: float, duration_s: float, seed: int) -> tuple[list[dict], list[dict]]:
     rng = np.random.default_rng(seed)
     labs = stats["labels"]
-    abnormal = [l for l in labs if l != "normal"]
+    abnormal = [x for x in labs if x != "normal"]
     frames: dict[float, list] = {}
     labels = []
     for seat, geo in stats["seats"].items():

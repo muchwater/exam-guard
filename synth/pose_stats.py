@@ -31,7 +31,7 @@ def main() -> None:
     ap.add_argument("--kpt-conf", type=float, required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    labels = [json.loads(l) for f in a.labels for l in open(f) if l.strip()]
+    labels = [json.loads(line) for f in a.labels for line in open(f) if line.strip()]
     poses, confs = defaultdict(list), defaultdict(list)
     seat_mid, seat_sw = defaultdict(list), defaultdict(list)
     for f in a.keypoints:
@@ -41,7 +41,7 @@ def main() -> None:
                 k = np.asarray(p["kpts"], float)
                 if p["seat"] is None or k[L_SHO, 2] < a.kpt_conf or k[R_SHO, 2] < a.kpt_conf:
                     continue
-                lab = next((l["label"] for l in labels if l["seat"] == p["seat"] and l["t_start"] <= fr["ts"] <= l["t_end"]),
+                lab = next((lb["label"] for lb in labels if lb["seat"] == p["seat"] and lb["t_start"] <= fr["ts"] <= lb["t_end"]),
                            "normal")
                 n, mid, sw = normalize(k)
                 poses[lab].append(n)
@@ -49,8 +49,8 @@ def main() -> None:
                 seat_mid[p["seat"]].append(mid)
                 seat_sw[p["seat"]].append(sw)
     durs = defaultdict(list)
-    for l in labels:
-        durs[l["label"]].append(l["t_end"] - l["t_start"])
+    for lb in labels:
+        durs[lb["label"]].append(lb["t_end"] - lb["t_start"])
     out = {"source": {"keypoints": a.keypoints, "labels": a.labels, "kpt_conf": a.kpt_conf}, "labels": {}, "seats": {}}
     for lab, ps in poses.items():
         P = np.stack(ps)

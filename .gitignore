@@ -12,3 +12,7 @@ data/runs/
 *.bin
 vision/native/qnn_runner
 !tests/fixtures/**
+data/external/
+data/derived/
+models/*.onnx
+data/synth/

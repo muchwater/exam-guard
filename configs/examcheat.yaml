@@ -1,0 +1,32 @@
+# Overlay (deep-merged over configs/default.yaml) with vision.action values measured on ExamCheat-MultiV.
+#   python -m vision.pipeline --config configs/examcheat.yaml ...
+# Evidence: data/measured/examcheat_feature_stats.json (python -m tools.examcheat_stats) and
+# docs/examcheat_analysis.md. Dataset: CC BY-SA 4.0, attribution in datasets/examcheat.py (ATTRIBUTION).
+# Caveat (read before use): on this dataset head_drop does NOT separate the proxy positives
+# (mobile_phone + hidden_notes) from normal writing (frame AUC 0.506, 95% CI 0.400-0.621). The threshold
+# below only marks "head lower than 95% of normal-writing frames"; the decision is left to fusion
+# with the network event. Replace with team recordings (docs/recording_protocol.md) when available.
+
+vision:
+  action:
+    behaviors:
+      head_down_hold:   # B1, docs/behavior_definitions.md
+        - feature: head_drop
+          op: ">"
+          value: 0.227  # source: data/measured/examcheat_feature_stats.json
+                        #   b1.heldout_kfold.by_target_fpr["0.05"].threshold_all_normal_frames
+                        #   = 95th percentile of head_drop over all 34 Normal clips (12,100 frames).
+                        #   Operating point = target 5% Normal-frame FPR: a judgement call, DECISION FOR THE USER
+                        #   (1% -> 0.252, 10% -> 0.199; same JSON). Held-out (clip 5-fold): frame FPR 0.061,
+                        #   frame TPR on mobile_phone+hidden_notes 0.073.
+      # glasses_touch (B2): thresholds stay TBD -- ExamCheat-MultiV has no glasses-touch positives.
+      # It is left out here because RuleFrameClassifier rejects a TBD threshold. False-alarm baseline on
+      # Normal frames for min_wrist_to_nose < t: t=0.5 -> 0.006, t=0.75 -> 0.123
+      # (b2.by_class.normal in the same JSON).
+      #   - {feature: min_wrist_to_nose, op: "<", value: TBD}
+    max_gap_s: 0.847  # source: same JSON, gaps.<mobile_phone|hidden_notes>.gaps_bracketed_by_head_down_s.max =
+                      #   longest head_drop dropout (nose/shoulder below kpt_conf) between two head-down
+                      #   frames inside positive clips (recording_protocol: longest dropout inside behaviour)
+    min_duration_s: TBD  # not derivable here: with the threshold above and max_gap_s, the longest Normal
+                         #   event is 7.08 s (crops nor25), longer than any positive clip's event (<= 6.00 s);
+                         #   clips are <= 11.9 s. Needs the acted AI-glasses hold durations from team recordings.

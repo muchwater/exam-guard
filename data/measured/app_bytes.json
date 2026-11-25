@@ -1,0 +1,71 @@
+{
+ "measured_at": "2026-11-25T11:14:49+00:00",
+ "python": "3.12.14",
+ "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+ "http_post_header_bytes_base": 120,
+ "http_post_header_note": "bytes = base + number of digits of Content-Length; host '192.168.0.2:8080', path /upload, Content-Type image/jpeg (capture/scenario_upload.py call)",
+ "http_get_header_bytes": 64,
+ "upload_server_response": {
+  "response_bytes": 95,
+  "status_line": "HTTP/1.0 200 OK",
+  "header_bytes": 93,
+  "body_bytes": 2,
+  "server_closes_connection": true
+ },
+ "tls": [
+  {
+   "host": "api.openai.com",
+   "version": "TLSv1.3",
+   "flights": [
+    [
+     "c2s",
+     1521
+    ],
+    [
+     "s2c",
+     3888
+    ],
+    [
+     "c2s",
+     80
+    ]
+   ]
+  },
+  {
+   "host": "api.anthropic.com",
+   "version": "TLSv1.3",
+   "flights": [
+    [
+     "c2s",
+     1524
+    ],
+    [
+     "s2c",
+     3877
+    ],
+    [
+     "c2s",
+     80
+    ]
+   ]
+  },
+  {
+   "host": "generativelanguage.googleapis.com",
+   "version": "TLSv1.3",
+   "flights": [
+    [
+     "c2s",
+     1540
+    ],
+    [
+     "s2c",
+     4260
+    ],
+    [
+     "c2s",
+     80
+    ]
+   ]
+  }
+ ]
+}

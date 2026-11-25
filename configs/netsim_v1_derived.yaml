@@ -1,0 +1,14 @@
+# DERIVED FROM SYNTHETIC DATA - provisional until real captures exist.
+# source: net_event.calibrate on data/synth/netsim_v1/index.jsonl split=calib -> data/measured/calib_netsim_v1.json
+# rules: see net_event/calibrate.py docstring
+net_event:
+  rule:
+    burst_gap_s: 0.07370400000013433
+    min_burst_bytes: 130653
+    large_frame_bytes: 1530
+    min_large_ratio: 0.9239130434782609
+  window_model:
+    path: data/models/net_logreg_synth.npz
+    step_s: 1.0
+    threshold: 0.3064922043443773
+    l2: 100.0

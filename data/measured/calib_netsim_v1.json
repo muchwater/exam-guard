@@ -1,0 +1,5256 @@
+{
+ "index": "data/synth/netsim_v1/index.jsonl",
+ "split": "calib",
+ "rule_presets": [
+  "esp32_lan",
+  "esp32_lan_wifi",
+  "esp32_wan",
+  "linux_wan"
+ ],
+ "rule_runs": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  22,
+  24,
+  26,
+  28,
+  30
+ ],
+ "all_runs": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  22,
+  24,
+  26,
+  28,
+  30,
+  32,
+  34,
+  36,
+  38,
+  40,
+  42,
+  44,
+  46
+ ],
+ "rule": {
+  "large_frame_bytes": 1530,
+  "burst_gap_s": 0.07370400000013433,
+  "min_burst_bytes": 130653,
+  "min_large_ratio": 0.9239130434782609,
+  "n_large_min": 85,
+  "n_small_max": 7,
+  "min_gap_between_uploads_s": 89.59714762800536,
+  "gap_separates_uploads": true
+ },
+ "per_run": [
+  {
+   "run": 0,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04049300000008316,
+   "min_gap_between_uploads": 89.89081423200605,
+   "n_uploads": 20
+  },
+  {
+   "run": 2,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.041185999999925116,
+   "min_gap_between_uploads": 106.317742898691,
+   "n_uploads": 45
+  },
+  {
+   "run": 4,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.040527000000111,
+   "min_gap_between_uploads": 93.14518956535608,
+   "n_uploads": 45
+  },
+  {
+   "run": 6,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04048299999999472,
+   "min_gap_between_uploads": 93.25472856535362,
+   "n_uploads": 45
+  },
+  {
+   "run": 8,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04103399999999624,
+   "min_gap_between_uploads": 199.83298400016702,
+   "n_uploads": 30
+  },
+  {
+   "run": 10,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04400399999997262,
+   "min_gap_between_uploads": 89.77256900000083,
+   "n_uploads": 20
+  },
+  {
+   "run": 12,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.004467000000005328,
+   "min_gap_between_uploads": 106.37264266666723,
+   "n_uploads": 45
+  },
+  {
+   "run": 14,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.049333999999817024,
+   "min_gap_between_uploads": 106.22085766665236,
+   "n_uploads": 45
+  },
+  {
+   "run": 16,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.07370400000013433,
+   "min_gap_between_uploads": 196.551826845214,
+   "n_uploads": 30
+  },
+  {
+   "run": 18,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04260599999997794,
+   "min_gap_between_uploads": 89.7005359171144,
+   "n_uploads": 20
+  },
+  {
+   "run": 20,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.04260799999997289,
+   "min_gap_between_uploads": 89.59714762800536,
+   "n_uploads": 20
+  },
+  {
+   "run": 22,
+   "median_size_in_upload": 1530.0,
+   "max_iat_in_upload": 0.042656999999962864,
+   "min_gap_between_uploads": 92.85344102445356,
+   "n_uploads": 45
+  },
+  {
+   "run": 24,
+   "median_size_in_upload": 1550.0,
+   "max_iat_in_upload": 0.03466200000002573,
+   "min_gap_between_uploads": 199.4957749895641,
+   "n_uploads": 30
+  },
+  {
+   "run": 26,
+   "median_size_in_upload": 1550.0,
+   "max_iat_in_upload": 0.012182999999822641,
+   "min_gap_between_uploads": 93.02531463717605,
+   "n_uploads": 45
+  },
+  {
+   "run": 28,
+   "median_size_in_upload": 1550.0,
+   "max_iat_in_upload": 0.008292999999866879,
+   "min_gap_between_uploads": 93.17041226909441,
+   "n_uploads": 45
+  },
+  {
+   "run": 30,
+   "median_size_in_upload": 1550.0,
+   "max_iat_in_upload": 0.0339769999999362,
+   "min_gap_between_uploads": 199.6730553773914,
+   "n_uploads": 30
+  }
+ ],
+ "per_upload_burst": [
+  {
+   "run": 0,
+   "seq": 0,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 1,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 2,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 3,
+   "bytes": 305281,
+   "large_ratio": 0.9707317073170731,
+   "n_large": 199,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 4,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 5,
+   "bytes": 305281,
+   "large_ratio": 0.9707317073170731,
+   "n_large": 199,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 6,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 7,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 8,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 9,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 10,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 11,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 12,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 13,
+   "bytes": 305281,
+   "large_ratio": 0.9707317073170731,
+   "n_large": 199,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 14,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 15,
+   "bytes": 305281,
+   "large_ratio": 0.9707317073170731,
+   "n_large": 199,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 16,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 17,
+   "bytes": 305281,
+   "large_ratio": 0.9707317073170731,
+   "n_large": 199,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 18,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 0,
+   "seq": 19,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 0,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 1,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 2,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 3,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 4,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 5,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 6,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 7,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 8,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 9,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 10,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 11,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 12,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 13,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 14,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 15,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 16,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 17,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 18,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 19,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 20,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 21,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 22,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 23,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 24,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 25,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 26,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 27,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 28,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 29,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 30,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 31,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 32,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 33,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 34,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 35,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 36,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 37,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 38,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 39,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 40,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 41,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 42,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 43,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 2,
+   "seq": 44,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 0,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 1,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 2,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 3,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 4,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 5,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 6,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 7,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 8,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 9,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 10,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 11,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 12,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 13,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 14,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 15,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 16,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 17,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 18,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 19,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 20,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 21,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 22,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 23,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 24,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 25,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 26,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 27,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 28,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 29,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 30,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 31,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 32,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 33,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 34,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 35,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 36,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 37,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 38,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 39,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 40,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 41,
+   "bytes": 531852,
+   "large_ratio": 0.9830028328611898,
+   "n_large": 347,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 42,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 43,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 4,
+   "seq": 44,
+   "bytes": 531762,
+   "large_ratio": 0.9857954545454546,
+   "n_large": 347,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 0,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 1,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 2,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 3,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 4,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 5,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 6,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 7,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 8,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 9,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 10,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 11,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 12,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 13,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 14,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 15,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 16,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 17,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 18,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 19,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 20,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 21,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 22,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 23,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 24,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 25,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 26,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 27,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 28,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 29,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 30,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 31,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 32,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 33,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 34,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 35,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 36,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 37,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 38,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 39,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 40,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 41,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 42,
+   "bytes": 195288,
+   "large_ratio": 0.9548872180451128,
+   "n_large": 127,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 43,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 6,
+   "seq": 44,
+   "bytes": 195198,
+   "large_ratio": 0.9621212121212122,
+   "n_large": 127,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 0,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 1,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 2,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 3,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 4,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 5,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 6,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 7,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 8,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 9,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 10,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 11,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 12,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 13,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 14,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 15,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 16,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 17,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 18,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 19,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 20,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 21,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 22,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 23,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 24,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 25,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 26,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 27,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 28,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 8,
+   "seq": 29,
+   "bytes": 305191,
+   "large_ratio": 0.9754901960784313,
+   "n_large": 199,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 0,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 1,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 2,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 3,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 4,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 5,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 6,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 7,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 8,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 9,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 10,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 11,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 12,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 13,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 14,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 15,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 16,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 17,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 18,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 10,
+   "seq": 19,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 0,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 1,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 2,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 3,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 4,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 5,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 6,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 7,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 8,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 9,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 10,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 11,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 12,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 13,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 14,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 15,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 16,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 17,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 18,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 19,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 20,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 21,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 22,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 23,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 24,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 25,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 26,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 27,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 28,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 29,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 30,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 31,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 32,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 33,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 34,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 35,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 36,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 37,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 38,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 39,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 40,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 41,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 42,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 43,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 12,
+   "seq": 44,
+   "bytes": 295389,
+   "large_ratio": 0.9746192893401016,
+   "n_large": 192,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 0,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 1,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 2,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 3,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 4,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 5,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 6,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 7,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 8,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 9,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 10,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 11,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 12,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 13,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 14,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 15,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 16,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 17,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 18,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 19,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 20,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 21,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 22,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 23,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 24,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 25,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 26,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 27,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 28,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 29,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 30,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 31,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 32,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 33,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 34,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 35,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 36,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 37,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 38,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 39,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 40,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 41,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 42,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 43,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 14,
+   "seq": 44,
+   "bytes": 130653,
+   "large_ratio": 0.9444444444444444,
+   "n_large": 85,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 0,
+   "bytes": 561056,
+   "large_ratio": 0.9838709677419355,
+   "n_large": 366,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 1,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 2,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 3,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 4,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 5,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 6,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 7,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 8,
+   "bytes": 560444,
+   "large_ratio": 0.9891891891891892,
+   "n_large": 366,
+   "n_small": 4,
+   "n_bursts_overlapping": 2
+  },
+  {
+   "run": 16,
+   "seq": 9,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 10,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 11,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 12,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 13,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 14,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 15,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 16,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 17,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 18,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 19,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 20,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 21,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 22,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 23,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 24,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 25,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 26,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 27,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 28,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 16,
+   "seq": 29,
+   "bytes": 560966,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 0,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 1,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 2,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 3,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 4,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 5,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 6,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 7,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 8,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 9,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 10,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 11,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 12,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 13,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 14,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 15,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 16,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 17,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 18,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 18,
+   "seq": 19,
+   "bytes": 395947,
+   "large_ratio": 0.9809885931558935,
+   "n_large": 258,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 0,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 1,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 2,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 3,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 4,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 5,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 6,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 7,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 8,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 9,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 10,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 11,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 12,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 13,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 14,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 15,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 16,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 17,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 18,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 20,
+   "seq": 19,
+   "bytes": 560947,
+   "large_ratio": 0.9865229110512129,
+   "n_large": 366,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 0,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 1,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 2,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 3,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 4,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 5,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 6,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 7,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 8,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 9,
+   "bytes": 711540,
+   "large_ratio": 0.9872340425531915,
+   "n_large": 464,
+   "n_small": 6,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 10,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 11,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 12,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 13,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 14,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 15,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 16,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 17,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 18,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 19,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 20,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 21,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 22,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 23,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 24,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 25,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 26,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 27,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 28,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 29,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 30,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 31,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 32,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 33,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 34,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 35,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 36,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 37,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 38,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 39,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 40,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 41,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 42,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 43,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 22,
+   "seq": 44,
+   "bytes": 711450,
+   "large_ratio": 0.9893390191897654,
+   "n_large": 464,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 0,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 1,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 2,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 3,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 4,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 5,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 6,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 7,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 8,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 9,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 10,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 11,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 12,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 13,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 14,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 15,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 16,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 17,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 18,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 19,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 20,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 21,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 22,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 23,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 24,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 25,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 26,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 27,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 28,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 24,
+   "seq": 29,
+   "bytes": 565422,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 0,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 1,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 2,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 3,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 4,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 5,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 6,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 7,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 8,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 9,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 10,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 11,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 12,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 13,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 14,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 15,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 16,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 17,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 18,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 19,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 20,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 21,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 22,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 23,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 24,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 25,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 26,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 27,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 28,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 29,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 30,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 31,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 32,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 33,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 34,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 35,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 36,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 37,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 38,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 39,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 40,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 41,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 42,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 43,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 26,
+   "seq": 44,
+   "bytes": 565406,
+   "large_ratio": 0.9811320754716981,
+   "n_large": 364,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 0,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 1,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 2,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 3,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 4,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 5,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 6,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 7,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 8,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 9,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 10,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 11,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 12,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 13,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 14,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 15,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 16,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 17,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 18,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 19,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 20,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 21,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 22,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 23,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 24,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 25,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 26,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 27,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 28,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 29,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 30,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 31,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 32,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 33,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 34,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 35,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 36,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 37,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 38,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 39,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 40,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 41,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 42,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 43,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 28,
+   "seq": 44,
+   "bytes": 412275,
+   "large_ratio": 0.9742647058823529,
+   "n_large": 265,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 0,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 1,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 2,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 3,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 4,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 5,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 6,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 7,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 8,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 9,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 10,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 11,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 12,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 13,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 14,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 15,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 16,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 17,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 18,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 19,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 20,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 21,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 22,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 23,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 24,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 25,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 26,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 27,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 28,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": 30,
+   "seq": 29,
+   "bytes": 264390,
+   "large_ratio": 0.96045197740113,
+   "n_large": 170,
+   "n_small": 7,
+   "n_bursts_overlapping": 1
+  }
+ ],
+ "window_model": {
+  "step_s": 1.0,
+  "l2_grid": [
+   0.0001,
+   0.001,
+   0.01,
+   0.1,
+   1.0,
+   10.0,
+   100.0,
+   1000.0,
+   10000.0
+  ],
+  "loso_mean_loglik": {
+   "0.0001": -0.3191298571236253,
+   "0.001": -0.011532559550890885,
+   "0.01": -0.00801045030733051,
+   "0.1": -0.006149538663825655,
+   "1.0": -0.002768013767418171,
+   "10.0": -0.0021373016220043507,
+   "100.0": -0.0017655441747537067,
+   "1000.0": -0.002056737190374203,
+   "10000.0": -0.005394408629057421
+  },
+  "l2": 100.0,
+  "threshold": 0.3064922043443773,
+  "threshold_criterion": "max F1 on pooled LOSO",
+  "loso_at_threshold": {
+   "precision": 1.0,
+   "recall": 0.9770114942528736,
+   "f1": 0.9883720930232558
+  },
+  "n_eval_points": 67794,
+  "n_pos": 783,
+  "model": "data/models/net_logreg_synth.npz"
+ }
+}

@@ -53,7 +53,8 @@ vision:
     classifier: rule  # rule | model
     min_duration_s: TBD   # source (to measure): duration distribution of acted behaviors (labels, lower tail)
     max_gap_s: TBD        # source (to measure): longest keypoint dropout inside labeled behavior intervals
-    behaviors: TBD        # definitions: docs/behavior_definitions.md; thresholds from
+    behaviors: TBD        # confirmed set: B1 head_down_hold + B2 glasses_touch (docs/behavior_definitions.md);
+                          #   ExamCheat-MultiV proposal for B1: configs/examcheat.yaml; thresholds from
                           #   `python -m vision.pipeline --dump-features` on labeled recordings. Format:
                           #   {label: [{feature: head_drop, op: ">", value: <measured>}, ...]}
     model:
@@ -82,6 +83,134 @@ synth:
     upload_interval_s: TBD    # experiment variable; source: chosen per experiment, see docs/capture_protocol.md
     measured_upload: TBD      # path to net_event.measure JSON of the upload scenario (sizes, IATs, bytes/upload)
     measured_background: TBD  # path to net_event.measure JSON of the idle or browsing scenario
+  netsim:   # spec-based 802.11 + TCP simulator (synth/netsim, docs/netsim_model.md). Source files were read
+            # on 2026-11-25 from GitHub master: torvalds/linux, espressif/esp-idf, lwip-tcpip/lwip,
+            # espressif/esp32-camera, w1.fi hostap, opencv/opencv 4.x.
+    phy:    # 2.4 GHz, HT 20 MHz, 1 spatial stream, long GI; control responses in non-HT OFDM
+      slot_us: 9              # source: linux drivers/net/wireless/ath/ath9k/hw.c `ah->slottime = 9` (short slot)
+      sifs_us: 10             # source: ath9k hw.c ath9k_hw_init_global_settings: sifstime = 10 on 2.4 GHz (16 on 5 GHz)
+      ofdm_preamble_us: 20    # source: ath9k mac.h OFDM_PREAMBLE_TIME 20
+      symbol_us: 4            # source: ath9k mac.h OFDM_SYMBOL_TIME 4; xmit.c SYMBOL_TIME(ns) = ns * 4 us (long GI)
+      plcp_bits: 22           # source: ath9k mac.h / xmit.c OFDM_PLCP_BITS 22 (16 SERVICE + 6 tail)
+      ht_preamble_us: 36      # source: ath9k xmit.c L_STF 8 + L_LTF 8 + L_SIG 4 + HT_SIG 8 + HT_STF 4 + HT_LTF(1) 4
+      ht_bits_per_symbol: [26, 52, 78, 104, 156, 208, 234, 260]  # source: ath9k xmit.c bits_per_symbol[][0] (20 MHz, MCS0-7)
+      mandatory_ofdm_mbps: [6, 12, 24]  # source: IEEE 802.11 OFDM PHY mandatory rates 6/12/24 Mb/s; control
+                                        #   response rate = highest of these <= data rate (802.11 control response
+                                        #   rate rule; standard text not re-read here)
+      ack_bytes: 14           # source: calc, ACK = FC 2 + Duration 2 + RA 6 + FCS 4 (802.11 frame format)
+      blockack_bytes: 32      # source: calc, compressed BlockAck = FC 2 + Dur 2 + RA 6 + TA 6 + BA Control 2 + SSC 2 + bitmap 8 + FCS 4
+      fcs_bytes: 4            # source: capture/dot11.py FCS_LEN (802.11 FCS is CRC-32)
+      ampdu_delimiter_bytes: 4  # source: 802.11 MPDU delimiter is 4 octets; subframes padded to 4 bytes (ath9k xmit.c PADBYTES)
+      ppdu_max_us: 5484       # source: calc, HT-mixed L-SIG limit: 20 + ceil((4095*8 + 22) / 24) * 4 = 5484 us
+                              #   (12-bit L-SIG LENGTH, max 4095 octets at 6 Mb/s)
+      ampdu_max_bytes: 65535  # source: linux include/linux/ieee80211-ht.h IEEE80211_HT_MAX_AMPDU_64K (2^(13+3) - 1)
+    edca_be_station:          # best-effort EDCA parameters the AP advertises to stations
+      aifsn: 3                # source: hostap hostapd/hostapd.conf wmm_ac_be_aifs=3
+      cwmin: 15               # source: hostapd.conf wmm_ac_be_cwmin=4 -> 2^4 - 1
+      cwmax: 1023             # source: hostapd.conf wmm_ac_be_cwmax=10 -> 2^10 - 1
+    edca_be_ap:               # the AP's own best-effort TX queue
+      aifsn: 3                # source: hostapd.conf tx_queue_data2_aifs=3
+      cwmin: 15               # source: hostapd.conf tx_queue_data2_cwmin=15
+      cwmax: 63               # source: hostapd.conf tx_queue_data2_cwmax=63
+    ap:
+      ba_window: 64           # source: linux include/linux/ieee80211-ht.h IEEE80211_MAX_AMPDU_BUF_HT 0x40
+                              #   (assumes a Linux/mac80211 AP such as hostapd or an Android hotspot)
+    encap:
+      qos_data_header_bytes: 26  # source: 802.11 QoS data header, 3 addresses (capture/dot11.py builds the same)
+      ccmp_header_bytes: 8       # source: 802.11 CCMP header (8 octets)
+      ccmp_mic_bytes: 8          # source: 802.11 CCMP MIC (8 octets)
+      llc_snap_bytes: 8          # source: RFC 1042 LLC/SNAP encapsulation
+      ipv4_header_bytes: 20      # source: RFC 791 header without options
+      tcp_header_bytes: 20       # source: RFC 9293 header without options
+    wired:
+      lan_link_bps: 1.0e9        # source: IEEE 802.3ab 1000BASE-T (team server wired to the AP)
+      ethernet_overhead_bytes: 38  # source: calc, preamble+SFD 8 + MAC header 14 + FCS 4 + inter-frame gap 12 (IEEE 802.3)
+    tcp:
+      lwip_espidf:               # ESP32-CAM class device
+        mss_offer: 1440          # source: esp-idf components/lwip/Kconfig LWIP_TCP_MSS default 1440
+        timestamps: false        # source: lwip src/include/lwip/opt.h LWIP_TCP_TIMESTAMPS 0
+        ts_option_bytes: 12      # source: RFC 7323 timestamps option 10 + 2 NOP (used only if both sides enable it)
+        syn_option_bytes: 4      # source: lwIP SYN carries only the MSS option when LWIP_WND_SCALE and
+                                 #   LWIP_TCP_SACK_OUT are off (esp-idf Kconfig: both "default n")
+        initial_cwnd: lwip       # source: lwip tcp_in.c LWIP_TCP_CALC_INITIAL_CWND = min(4*mss, max(2*mss, 4380))
+        ssthresh_init_bytes: 5760  # source: lwip tcp.c `pcb->ssthresh = TCP_SND_BUF`; esp-idf LWIP_TCP_SND_BUF_DEFAULT 5760
+        ss_cap_at_ssthresh: false  # source: lwip tcp_in.c slow start adds `increase` without capping at ssthresh
+        ss_increase_limit_segments: 2  # source: lwip tcp_in.c increase = min(acked, 2 * mss) (RFC 3465 L=2)
+        snd_buf_bytes: 5760      # source: esp-idf Kconfig LWIP_TCP_SND_BUF_DEFAULT 5760 (4 x default MSS)
+        rcv_wnd_bytes: 5760      # source: esp-idf Kconfig LWIP_TCP_WND_DEFAULT 5760
+        nagle: true              # source: lwIP enables Nagle unless the app calls tcp_nagle_disable / TCP_NODELAY
+        ack_policy: lwip         # source: lwip tcp_ack(): ACK every 2nd segment, otherwise from tcp_fasttmr
+        delack_timer_period_s: 0.25  # source: esp-idf Kconfig LWIP_TCP_TMR_INTERVAL 250 ms; lwip tcp.c tcp_tmr calls
+                                     #   tcp_fasttmr every interval (timer phase drawn uniformly per endpoint)
+      linux:
+        mss_offer: 1460          # source: calc, 1500 MTU (RFC 894) - 20 IPv4 - 20 TCP
+        timestamps: true         # source: linux Documentation/networking/ip-sysctl.rst tcp_timestamps "Default: 1"
+        ts_option_bytes: 12      # source: RFC 7323 timestamps 10 + 2 NOP
+        syn_option_bytes: 20     # source: calc, Linux SYN options MSS 4 + SACK_PERM/TS 12 + NOP/WS 4 (tcp_output.c tcp_syn_options)
+        initial_cwnd: 10         # source: linux include/net/tcp.h TCP_INIT_CWND 10 (RFC 6928)
+        ssthresh_init_bytes: null  # source: Linux starts with TCP_INFINITE_SSTHRESH
+        ss_cap_at_ssthresh: true   # source: linux net/ipv4/tcp_cong.c tcp_slow_start: min(cwnd + acked, ssthresh)
+        ss_increase_limit_segments: null  # source: tcp_cong.c tcp_slow_start adds all acked segments
+        snd_buf_bytes: null      # not limiting here (autotuned send buffer); window limited by the peer
+        rcv_wnd_bytes: 65535     # source: ip-sysctl.rst tcp_rmem default 131072 "results in initial window of 65535"
+                                 #   (receive-window autotuning growth is not modelled)
+        nagle: true              # Linux default; apps may disable it (see devices.*.app_nagle)
+        ack_policy: linux
+        quickack_max: 16         # source: linux include/net/tcp.h TCP_MAX_QUICKACKS 16U; tcp_input.c tcp_incr_quickack
+        delack_min_s: 0.04       # source: include/net/tcp.h TCP_DELACK_MIN (HZ/25) = 40 ms
+    devices:
+      esp32cam:                  # hidden camera module (OV2640 + ESP32)
+        tcp: lwip_espidf
+        ba_window: 6             # source: esp-idf components/esp_wifi/Kconfig ESP_WIFI_TX_BA_WIN default 6 (AMPDU TX default y)
+        app_nagle: true          # lwIP default (no TCP_NODELAY assumed for an embedded HTTP client)
+      linux_client:              # laptop / phone running capture/scenario_upload.py (Python http.client)
+        tcp: linux
+        ba_window: 64            # source: linux include/linux/ieee80211-ht.h IEEE80211_MAX_AMPDU_BUF_HT 0x40
+        app_nagle: false         # source: CPython http/client.py HTTPConnection.connect sets TCP_NODELAY
+    servers:
+      lan_wired:    {tcp: linux}                          # team laptop wired to the AP (capture/upload_server.py)
+      lan_wireless: {tcp: linux, device: linux_client}    # team laptop associated to the same AP
+      wan:          {tcp: linux}                          # public HTTPS endpoint (TCP terminator assumed Linux)
+    tls:
+      record_max_plaintext: 16384  # source: RFC 8446 section 5.1, TLSPlaintext length <= 2^14
+      record_overhead_bytes: 22    # source: calc, RFC 8446 5-byte record header + 1-byte inner content type
+                                   #   + 16-byte AEAD tag (AES-GCM, RFC 5116)
+    measured:
+      app_bytes: data/measured/app_bytes.json         # tools.measure_app_bytes (HTTP bytes from our real client/server,
+                                                      #   TLS 1.3 flight sizes against public API hosts)
+      wan_rtt: data/measured/wan_rtt_devpc.json       # tools.rtt_probe from the dev PC (campus wired network)
+    image:
+      reference: data/ref/page_proxy.png   # tools.make_page_proxy (PROXY until a real photo, see its docstring)
+      jpeg_quality: 95                     # source: opencv imgcodecs.hpp IMWRITE_JPEG_QUALITY "Default value is 95"
+      resolutions: [640x480, 800x600, 1024x768, 1280x720, 1280x1024, 1600x1200]
+                                           # source: espressif/esp32-camera driver/include/sensor.h framesize_t
+                                           #   (VGA..UXGA; UXGA 1600x1200 is the OV2640 maximum)
+    mcs: [0, 1, 2, 3, 4, 5, 6, 7]          # source: every HT 20 MHz single-stream MCS (ath9k bits_per_symbol);
+                                           #   no measured rate distribution yet, so runs sweep all of them
+    page_weight_bytes:                     # source: HTTP Archive Web Almanac 2024, Page Weight, Figure 16.37
+      p10: 482304                          #   (Lighthouse, June 2024, mobile): 471 / 995 / 1938 / 3766 / 7680 KB
+      p25: 1018880                         #   (x 1024 bytes); sampling is limited to the reported p10..p90 range
+      p50: 1984512
+      p75: 3856384
+      p90: 7864320
+    exam_subjects:                         # source: 교육부·한국교육과정평가원 2027학년도 수능 시행기본계획
+                                           #   (2026-03-31) 부록3: 문항 수, 시험 시간. One upload per question
+                                           #   -> interval = minutes * 60 / questions
+      korean:  {minutes: 80,  questions: 45}
+      math:    {minutes: 100, questions: 30}
+      english: {minutes: 70,  questions: 45}
+      inquiry: {minutes: 30,  questions: 20}   # 사회/과학탐구 과목당
+    presets:   # what runs on the device during an exam-length run
+      esp32_lan:        {device: esp32cam, upload: lan_wired}
+      esp32_lan_wifi:   {device: esp32cam, upload: lan_wireless}
+      esp32_wan:        {device: esp32cam, upload: wan}
+      linux_wan:        {device: linux_client, upload: wan}
+      linux_browse:     {device: linux_client, upload: null, browse: true}
+      linux_browse_wan: {device: linux_client, upload: wan, browse: true}
+    macs:
+      device: "02:00:00:00:00:01"   # locally administered (IEEE 802 U/L bit), synthetic only
+      ap: "02:00:00:00:00:fe"
+      server: "02:00:00:00:00:02"
   keypoints:
     seed: 0
     fps: TBD                  # source (to measure): delivered camera fps (vision.camera --measure-fps)

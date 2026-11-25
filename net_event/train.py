@@ -23,19 +23,23 @@ from net_event.labels import load_intervals
 
 
 def session_xy(pcap: str, labels: str, device: str, offset: float, windows_s: list[float], step_s: float,
-               large: int) -> tuple[np.ndarray, np.ndarray]:
-    """Evaluation times every step_s; label = 1 if the evaluation time lies inside a ground-truth upload."""
+               large: int, t_begin: float | None = None, t_end: float | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """Evaluation times every step_s. Label = 1 if the shortest window [t - min(windows_s), t] overlaps a
+    ground-truth upload, i.e. the window the detector reports as the event (WindowModelDetector) contains it."""
     pkts = sorted(read_pcap(pcap, MacAllowlist([device])), key=lambda p: p.ts)
     gt = load_intervals(labels, offset)
     if not pkts:
         return np.zeros((0, len(feature_names(windows_s)))), np.zeros(0)
     ts = np.asarray([p.ts for p in pkts])
-    t_eval = np.arange(pkts[0].ts + max(windows_s), pkts[-1].ts, step_s)
+    t0 = (pkts[0].ts if t_begin is None else t_begin) + max(windows_s)
+    t1 = pkts[-1].ts if t_end is None else t_end
+    t_eval = np.arange(t0, t1, step_s)
     X = []
     for t in t_eval:
         lo, hi = np.searchsorted(ts, t - max(windows_s)), np.searchsorted(ts, t)
         X.append(multi_window_features(pkts[lo:hi], device, t, windows_s, large))
-    y = np.array([any(g.t_start <= t <= g.t_end for g in gt) for t in t_eval], float)
+    w = min(windows_s)
+    y = np.array([any(g.t_start <= t and g.t_end >= t - w for g in gt) for t in t_eval], float)
     return (np.stack(X) if X else np.zeros((0, len(feature_names(windows_s))))), y
 
 

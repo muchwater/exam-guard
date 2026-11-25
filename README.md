@@ -24,13 +24,21 @@ net_event/  feature(크기, IAT, burst), rule-based detector, 같은 interface�
 vision/     카메라·녹화(frame timestamp), pose(QNN HTP / ONNX CPU fallback), 좌석 매핑, 행동 인식
 fusion/     time-window fusion → alert
 synth/      측정 분포 기반 합성 pcap / keypoint 생성기
+synth/netsim/  명세 기반 802.11 + TCP 시뮬레이터: 이미지 업로드·브라우징 pcap(실측 전 단계, docs/netsim_model.md)
+datasets/   공개 데이터 index (ExamCheat-MultiV, CC BY-SA 4.0)
 demo/       live 데모(자동 녹화) + 화면(영상 overlay, network timeline, alert log)
 replay/     녹화된 pcap + 영상으로 전체 pipeline 재생(오프라인 데모)
-tools/      TBD 목록, 좌석 표시, 카메라 지연·시계 오차 측정, 연기 cue
+tools/      TBD 목록, 좌석 표시, 카메라 지연·시계 오차 측정, 연기 cue, RTT/HTTP·TLS 바이트 측정,
+            ExamCheat pose 추출·통계, 대용 페이지 이미지, offline 데모 세션 생성
 docs/       조사 결과, 정의 후보, 캡처·녹화 절차, 시간 동기화
 common/     공통 event 타입, config(TBD 검사), latency 기록
 ```
-구조는 지시안을 따랐다. 추가한 것은 두 가지다. 모듈들이 같은 event 타입과 config 로더를 써야 해서 `common/`을 만들었고, 측정·보조 스크립트를 `tools/`로 분리했다.
+구조는 지시안을 따랐다. 추가한 것은 세 가지다. 모듈들이 같은 event 타입과 config 로더를 써야 해서 `common/`을 만들었고, 측정·보조 스크립트를 `tools/`로 분리했다. 공개 데이터셋 index는 `datasets/`에 두었다.
+
+config는 겹쳐 쓴다(`--config`를 여러 번 주면 뒤의 것이 앞의 것을 덮는다).
+- `configs/default.yaml`: 실제 시스템용. 근거가 없는 값은 TBD로 남긴다.
+- `configs/netsim_v1_derived.yaml`: 합성 데이터에서 유도한 network detector 값. 잠정값이다.
+- `configs/examcheat.yaml`: ExamCheat-MultiV에서 측정한 B1 임계값 제안.
 
 ## 설치
 ```bash
@@ -50,6 +58,24 @@ python -m vision.pipeline --video data/raw/a.mp4           # 단독: vision
 python -m replay.run --pcap x.pcap --video a.mp4 --out data/runs/r1 --render   # 오프라인 전체
 sudo -E .venv/bin/python -m demo.live --run data/runs/live_001                 # 라이브(자동 녹화)
 ```
+### 하드웨어 없이 전체 흐름 (합성 패킷 + ExamCheat 영상)
+```bash
+python -m synth.netsim.dataset --out data/synth/netsim_v1 --runs-per-preset 8 --browse-duration 300 --workers 24
+python -m net_event.calibrate --index data/synth/netsim_v1/index.jsonl --split calib \
+    --rule-preset esp32_lan --rule-preset esp32_lan_wifi --rule-preset esp32_wan --rule-preset linux_wan \
+    --out-json data/measured/calib_netsim_v1.json --out-config configs/netsim_v1_derived.yaml
+python -m net_event.evaluate --index data/synth/netsim_v1/index.jsonl --split eval \
+    --config configs/netsim_v1_derived.yaml --detector window_model --out data/measured/eval_window.json
+E=data/external/examcheat/V1/V1
+python -m tools.make_demo_session --out data/runs/demo_synth --clip $E/nor10.mp4 --clip $E/m16.mp4 \
+    --clip $E/n11.mp4 --clip $E/nor11.mp4 --upload-in-class mobile_phone --upload-in-class hidden_notes \
+    --preset esp32_lan --mcs 5 --resolution 1280x720
+python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo_synth/video.mp4 \
+    --out data/runs/demo_synth/replay --config configs/netsim_v1_derived.yaml --config configs/examcheat.yaml \
+    --config data/runs/demo_synth/session.yaml --render
+```
+`session.yaml`에는 데모 전용 값(fusion pre/post 0, min_duration 0)이 들어 있다. 실측값이 아니므로 파일 안에 그렇게 표시해 두었다. ExamCheat 영상을 보여 줄 때는 CC BY-SA 4.0 출처를 함께 표기한다.
+
 각 모듈은 단독 실행할 수 있다. 수치가 `TBD`인 파라미터가 필요한 경로는 `TBDError`로 멈추고 어떤 key인지 알려 준다(임의 값으로 돌지 않음).
 
 ## 핵심 설계
@@ -57,6 +83,17 @@ sudo -E .venv/bin/python -m demo.live --run data/runs/live_001                 #
 - **detector 교체**: `NetDetector` interface(`update`/`advance`/`flush`) 아래에 `RuleDetector`와 `WindowModelDetector`(logistic 또는 ONNX)가 있다. 바꿀 때는 `net_event.detector` 설정만 고치면 된다.
 - **NPU + fallback**: pose는 QNN HTP 상주 runner로 돌린다. 실패하면 ONNX Runtime CPU로 넘어간다. stage별 latency(ms)를 `latency.csv`로 남긴다.
 - **개인정보**: kernel BPF(`wlan addr1/addr2 <우리 MAC>`)로 다른 기기의 frame을 수집 단계에서 버리고, 읽을 때 한 번 더 거른다. allowlist가 비어 있으면 캡처를 거부한다.
+
+## 현재 상태 (2026-11-25)
+- 이상 행동: **B1 고개 숙임 유지 + B2 안경 만지기**로 확정했다.
+  - ExamCheat-MultiV에서 B1 `head_drop`은 정상 필기와 구분되지 않았다(frame AUC 0.506).
+  - B2는 데이터셋에 양성 샘플이 없다.
+  - 두 행동 모두 팀원 연기 녹화로 다시 측정해야 한다(`docs/examcheat_analysis.md`).
+- 네트워크: 합성 데이터(eval)에서 두 detector의 결과가 갈렸다.
+  - 업로드 전용 기기: rule과 window model 모두 recall 1.0, 오탐 0.
+  - 브라우징 중 업로드: rule은 0/9이고 window model은 9/9.
+  - 합성 결과이므로 실제 성능의 상한으로 본다(`docs/netsim_model.md`).
+- 보드 측정(monitor mode, 카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
 
 ## 한계
 - Wi-Fi로 전송하는 경우만 탐지한다. LTE나 Bluetooth로 휴대폰에 넘긴 뒤 휴대폰이 셀룰러로 업로드하면 sniffer로는 보이지 않는다.

@@ -96,6 +96,13 @@ class RuleDetector(NetDetector):
 
 # ---------------------------------------------------------------- model-based detector
 
+def _sigmoid(z: np.ndarray) -> np.ndarray:
+    """Overflow-free logistic function."""
+    z = np.asarray(z, np.float64)
+    e = np.exp(-np.abs(z))
+    return np.where(z >= 0, 1.0 / (1.0 + e), e / (1.0 + e))
+
+
 class LogisticModel:
     """Standardized logistic regression; stored as .npz (mean, std, w, b, feature names)."""
 
@@ -105,7 +112,7 @@ class LogisticModel:
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
         z = ((np.asarray(X, np.float64) - self.mean) / self.std) @ self.w + self.b
-        return 1.0 / (1.0 + np.exp(-z))
+        return _sigmoid(z)
 
     def save(self, path: str | Path) -> None:
         np.savez(path, mean=self.mean, std=self.std, w=self.w, b=self.b, features=np.array(self.features))
@@ -128,7 +135,7 @@ class LogisticModel:
         reg = np.full(Z.shape[1], l2)
         reg[-1] = 0.0                                  # bias is not regularized
         for _ in range(max_iter):
-            p = 1.0 / (1.0 + np.exp(-(Z @ theta)))
+            p = _sigmoid(Z @ theta)
             grad = Z.T @ (p - y) + reg * theta
             H = (Z * (p * (1 - p))[:, None]).T @ Z + np.diag(reg) + 1e-9 * np.eye(Z.shape[1])
             step = np.linalg.solve(H, grad)

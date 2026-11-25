@@ -97,13 +97,35 @@ def parse_frame(ts: float, data: bytes, orig_len: int, linktype: int) -> Optiona
     )
 
 
-def build_radiotap(rssi_dbm: int, channel_mhz: int, rate_500kbps: int, fcs: bool = False) -> bytes:
-    """Radiotap header with Flags, Rate, Channel, dBm antenna signal (used by synth/ and tests)."""
-    present = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 5)
-    flags = RT_FLAG_FCS if fcs else 0
-    # Flags@8, Rate@9, Channel@10 (2-aligned), antenna signal@14 -> length 15
-    body = struct.pack("<BBHHb", flags, rate_500kbps, channel_mhz, 0x0080, rssi_dbm)  # 0x0080: 2 GHz channel flag
+def build_radiotap(rssi_dbm: Optional[int], channel_mhz: Optional[int], rate_500kbps: Optional[int],
+                   fcs: bool = False) -> bytes:
+    """Radiotap header with Flags and, when given, Rate, Channel, dBm antenna signal (synth/ and tests).
+
+    Fields that are None are left out of the present bitmap instead of being filled with made-up values.
+    """
+    present = 1 << 1
+    body = struct.pack("<B", RT_FLAG_FCS if fcs else 0)                 # Flags @8
+    if rate_500kbps is not None:
+        present |= 1 << 2
+        body += struct.pack("<B", rate_500kbps)
+    if channel_mhz is not None:
+        present |= 1 << 3
+        if (8 + len(body)) % 2:
+            body += b"\0"                                                # Channel is 2-byte aligned
+        body += struct.pack("<HH", channel_mhz, 0x0080)                  # 0x0080: 2 GHz channel flag
+    if rssi_dbm is not None:
+        present |= 1 << 5
+        body += struct.pack("<b", rssi_dbm)
     return struct.pack("<BBHI", 0, 0, 8 + len(body), present) + body
+
+
+def build_ctrl_frame(subtype: int, ra: str, ta: Optional[str] = None, body_len: int = 0) -> bytes:
+    """Control frame without FCS: FC, Duration, RA [, TA] and body_len zero bytes (e.g. BlockAck fields)."""
+    fc0 = (subtype << 4) | (1 << 2)
+    out = struct.pack("<BBH", fc0, 0, 0) + bytes(int(x, 16) for x in ra.split(":"))
+    if ta is not None:
+        out += bytes(int(x, 16) for x in ta.split(":"))
+    return out + b"\0" * body_len
 
 
 def build_dot11_header(ftype: int, subtype: int, addr1: str, addr2: str, addr3: str,

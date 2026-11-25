@@ -67,6 +67,9 @@ fusion:
   pre_s: TBD          # source (to measure): timestamp error between camera and sniffer (tools/sync_check.py)
   post_s: TBD         # source (to measure): end of photographing motion -> upload start, from combined recordings
   behavior_labels: null   # null = every behavior label may fuse
+  evidence:               # fusion/seat_evidence.py: seat ranking over a device's repeated uploads (no tuning constant)
+    alpha: null           # optional significance level to mark the top seat "identified" (p_adj < alpha);
+                          #   null = ranking + p-values only. A conventional choice would be 0.05 -- user decision.
 
 demo:
   timeline_s: 60      # display only (no effect on detection): width of the network timeline strip

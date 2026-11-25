@@ -8,7 +8,8 @@ CLOCK_REALTIME of the capture host. The two streams are merged in timestamp orde
 sees exactly the sequence it saw live. If the two were recorded on different hosts, pass the measured
 clock offset with --video-offset (added to the video timestamps).
 
-Outputs in --out: alerts.jsonl, net_events.jsonl, behavior_events.jsonl, latency.csv (+ render.mp4).
+Outputs in --out: alerts.jsonl, net_events.jsonl, behavior_events.jsonl, seat_evidence.json (per-device seat
+ranking over repeated uploads, fusion/seat_evidence.py), latency.csv (+ render.mp4).
 """
 from __future__ import annotations
 
@@ -26,6 +27,7 @@ from capture.pcap_io import iter_packets
 from common.config import load_config
 from common.events import Alert, BehaviorEvent, NetEvent
 from common.profiling import LatencyLog
+from fusion.seat_evidence import SeatEvidence
 from fusion.time_window import TimeWindowFusion
 from net_event.detector import build_detector
 
@@ -63,9 +65,11 @@ class Pipeline:
         self.net = build_detector(cfg)
         self.fusion = TimeWindowFusion.from_config(cfg)
         self.vision = None
+        self.evidence: Optional[SeatEvidence] = None
         if with_vision:
             from vision.pipeline import VisionPipeline
             self.vision = VisionPipeline(cfg, self.lat)
+            self.evidence = SeatEvidence.from_config(cfg)
         self.net_events: list[NetEvent] = []
         self.beh_events: list[BehaviorEvent] = []
         self.alerts: list[Alert] = []
@@ -77,6 +81,8 @@ class Pipeline:
             self.net_events.append(e)
             with self.lat.stage("fusion"):
                 out += self.fusion.add_net(e, now)
+                if self.evidence is not None:
+                    self.evidence.add_net(e)
         return out
 
     def _on_beh(self, evs: list[BehaviorEvent], now: float) -> list[Alert]:
@@ -85,6 +91,8 @@ class Pipeline:
             self.beh_events.append(e)
             with self.lat.stage("fusion"):
                 out += self.fusion.add_behavior(e, now)
+                if self.evidence is not None:
+                    self.evidence.add_behavior(e)
         return out
 
     def on_packet(self, pkt) -> list[Alert]:
@@ -100,6 +108,7 @@ class Pipeline:
         a = self._on_net(nevs, ts)
         if self.vision is not None:
             self.last_pose, bevs = self.vision.process(idx, ts, img)
+            self.evidence.observe(ts)
             a += self._on_beh(bevs, ts)
         self.alerts += a
         return a
@@ -186,6 +195,15 @@ def main() -> None:
     _dump(out / "alerts.jsonl", pipe.alerts)
     _dump(out / "net_events.jsonl", pipe.net_events)
     _dump(out / "behavior_events.jsonl", pipe.beh_events)
+    if pipe.evidence is not None:
+        ev = {d: {"final": [r.to_dict() for r in pipe.evidence.ranking(d)], "after_each_upload": pipe.evidence.history(d)}
+              for d in pipe.evidence.devices()}
+        (out / "seat_evidence.json").write_text(json.dumps(ev, indent=1) + "\n")
+        for d, v in ev.items():
+            top = v["final"][0] if v["final"] else None
+            if top:
+                print(f"[EVIDENCE] device {d}: top seat {top['seat']} matched {top['matches']}/{top['uploads']} uploads, "
+                      f"p={top['p_value']:.3g} (Bonferroni {top['p_adj']:.3g})")
     pipe.lat.dump_csv(out / "latency.csv")
     print(f"{len(pipe.net_events)} net events, {len(pipe.beh_events)} behavior events, {len(pipe.alerts)} alerts")
     print(pipe.lat.format_summary())

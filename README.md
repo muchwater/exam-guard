@@ -22,7 +22,7 @@ configs/    모든 수치 파라미터 (+ "# source:" 근거, 근거가 없으�
 capture/    monitor mode 설정, live sniffer(tcpdump + BPF 우리 MAC 필터), pcap reader/writer, 캡처 실험 스크립트
 net_event/  feature(크기, IAT, burst), rule-based detector, 같은 interface의 window-model detector, 측정·학습
 vision/     카메라·녹화(frame timestamp), pose(QNN HTP / ONNX CPU fallback), 좌석 매핑, 행동 인식
-fusion/     time-window fusion → alert
+fusion/     time-window fusion → alert, 반복 업로드에 걸친 좌석별 증거 누적(seat_evidence)
 synth/      측정 분포 기반 합성 pcap / keypoint 생성기
 synth/netsim/  명세 기반 802.11 + TCP 시뮬레이터: 이미지 업로드·브라우징 pcap(실측 전 단계, docs/netsim_model.md)
 datasets/   공개 데이터 index (ExamCheat-MultiV, CC BY-SA 4.0)
@@ -79,6 +79,7 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
 각 모듈은 단독 실행할 수 있다. 수치가 `TBD`인 파라미터가 필요한 경로는 `TBDError`로 멈추고 어떤 key인지 알려 준다(임의 값으로 돌지 않음).
 
 ## 핵심 설계
+- **"언제"는 패킷, "누가"는 vision**: B1(고개 숙임)은 정상 필기와 자세가 겹치지만, 업로드가 없으면 alert를 내지 않는다. 업로드 순간에 여러 좌석이 B1이면, 업로드가 반복될 때 좌석별로 증거를 누적해 한 좌석으로 좁힌다(`fusion/seat_evidence.py`, `docs/seat_evidence.md`). 이 과정에는 조정 상수가 없고, 시험 전체에서 정상 좌석 오지목 확률을 α 이하로 묶는다.
 - **replay 우선**: 모든 모듈은 입력 timestamp만 쓰고 wall clock은 쓰지 않는다. 그래서 라이브에서 녹화한 pcap과 영상을 replay하면 같은 결과가 나온다. 동기화 방법은 `docs/time_sync.md`에 있다.
 - **detector 교체**: `NetDetector` interface(`update`/`advance`/`flush`) 아래에 `RuleDetector`와 `WindowModelDetector`(logistic 또는 ONNX)가 있다. 바꿀 때는 `net_event.detector` 설정만 고치면 된다.
 - **NPU + fallback**: pose는 QNN HTP 상주 runner로 돌린다. 실패하면 ONNX Runtime CPU로 넘어간다. stage별 latency(ms)를 `latency.csv`로 남긴다.
@@ -89,6 +90,10 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
   - ExamCheat-MultiV에서 B1 `head_drop`은 정상 필기와 구분되지 않았다(frame AUC 0.506).
   - B2는 데이터셋에 양성 샘플이 없다.
   - 두 행동 모두 팀원 연기 녹화로 다시 측정해야 한다(`docs/examcheat_analysis.md`).
+- 좌석 특정: ExamCheat의 정상 행동으로 분석한 결과는 다음과 같다(`docs/seat_evidence.md`).
+  - 조건: 30석, 수학(업로드 30회), 촬영 자세 recall 0.8.
+  - B1 임계값이 0.227이면 약 6번째 업로드에서 좌석이 특정된다.
+  - 정상 좌석 오지목은 0.5% 이하다.
 - 네트워크: 합성 데이터(eval)에서 두 detector의 결과가 갈렸다.
   - 업로드 전용 기기: rule과 window model 모두 recall 1.0, 오탐 0.
   - 브라우징 중 업로드: rule은 0/9이고 window model은 9/9.

@@ -18,6 +18,14 @@ from common.events import Alert, BehaviorEvent, NetEvent
 _MAX_KEEP = 10_000   # memory cap on stored events (a bound, not a detection parameter)
 
 
+def matches(b: BehaviorEvent, n: NetEvent, pre_s: float, post_s: float,
+            behavior_labels: set[str] | None = None) -> bool:
+    """The fusion window rule (module docstring); shared with fusion.seat_evidence."""
+    if behavior_labels is not None and b.label not in behavior_labels:
+        return False
+    return n.t_start <= b.t_end + post_s and n.t_end >= b.t_start - pre_s
+
+
 class TimeWindowFusion:
     def __init__(self, pre_s: float, post_s: float, behavior_labels: set[str] | None = None):
         self.pre_s, self.post_s = pre_s, post_s
@@ -34,9 +42,7 @@ class TimeWindowFusion:
         return cls(float(pre), float(post), set(labels) if labels else None)
 
     def _match(self, b: BehaviorEvent, n: NetEvent) -> bool:
-        if self.behavior_labels is not None and b.label not in self.behavior_labels:
-            return False
-        return n.t_start <= b.t_end + self.post_s and n.t_end >= b.t_start - self.pre_s
+        return matches(b, n, self.pre_s, self.post_s, self.behavior_labels)
 
     def _pair(self, bi: int, b: BehaviorEvent, ni: int, n: NetEvent, now: float) -> list[Alert]:
         key = (bi, ni)

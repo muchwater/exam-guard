@@ -90,6 +90,19 @@ class DemoView:
         cv2.putText(panel, "ALERTS", (10, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255) if hot else (200, 200, 200), 2)
         for i, line in enumerate(self.log):
             cv2.putText(panel, line, (10, 50 + 20 * i), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (230, 230, 230), 1)
+        ev = getattr(pipe, "evidence", None)
+        if ev is not None:
+            y = 50 + 20 * self.log.maxlen + 20
+            cv2.putText(panel, "SEAT EVIDENCE (matched/uploads, p)", (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (200, 200, 200), 1)
+            for d in ev.devices():
+                y += 22
+                cv2.putText(panel, f"dev ..{d[-5:]}", (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (160, 200, 255), 1)
+                for r in ev.ranking(d)[:5]:
+                    y += 18
+                    col = (0, 0, 255) if r.identified else (230, 230, 230)
+                    cv2.putText(panel, f"{r.seat:>6s} {r.matches}/{r.uploads}  p={r.p_value:.2g}", (16, y),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.42, col, 1)
         top = np.hstack([frame, panel])
         out = np.vstack([top, self._timeline(now, top.shape[1], pipe)])
         if self.out_path is not None:

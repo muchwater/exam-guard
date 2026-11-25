@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/raw/
+data/runs/
+*.pcap
+*.pcapng
+*.mp4
+*.avi
+*.dlc
+*.bin
+vision/native/qnn_runner
+!tests/fixtures/**

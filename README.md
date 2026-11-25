@@ -1,0 +1,64 @@
+# exam-guard — 시험장 AI 부정행위 탐지 데모
+
+KAIST On-device AI 텀 프로젝트(Rubik Pi 3, QCS6490).
+
+초소형 카메라나 AI 안경으로 시험지를 촬영하고 무선으로 전송해 생성형 AI의 답을 받는 부정행위를 노린다. 두 신호를 같은 시간 창(time window)에서 결합해 **언제**와 **누가**를 함께 특정한다.
+
+| 신호 | 입력 | 알려 주는 것 | 모듈 |
+|---|---|---|---|
+| Network event | Wi-Fi **monitor mode** 캡처(우리 기기 MAC만), frame 크기와 inter-arrival time | 이미지 업로드형 전송이 **언제** 있었는가 | `capture/`, `net_event/` |
+| Abnormal behavior | 카메라 → pose(NPU) → 좌석별 행동 | **누가**(좌석) 이상 행동을 했는가 | `vision/` |
+| Time-Window Fusion | 두 이벤트 | 겹칠 때만 alert(시각 + 좌석) | `fusion/` |
+
+- **monitor mode**: NIC가 채널의 모든 802.11 frame을 OS로 올려 주는 모드.
+- **radiotap**: monitor mode에서 frame마다 붙는 metadata header(RSSI, rate, channel 등).
+- **inter-arrival time(IAT)**: 같은 기기가 보낸 연속 frame 사이의 시간 간격.
+
+선행 연구: Lumos(Sharma et al., USENIX Security 2022). 암호화된 802.11 트래픽의 크기와 시간 정보만으로 숨겨진 IoT 기기를 식별한다. `net_event`의 multi-timescale window는 Lumos Algorithm 1을 따른다.
+
+## 구조
+```
+configs/    모든 수치 파라미터 (+ "# source:" 근거, 근거가 없으면 TBD)
+capture/    monitor mode 설정, live sniffer(tcpdump + BPF 우리 MAC 필터), pcap reader/writer, 캡처 실험 스크립트
+net_event/  feature(크기, IAT, burst), rule-based detector, 같은 interface의 window-model detector, 측정·학습
+vision/     카메라·녹화(frame timestamp), pose(QNN HTP / ONNX CPU fallback), 좌석 매핑, 행동 인식
+fusion/     time-window fusion → alert
+synth/      측정 분포 기반 합성 pcap / keypoint 생성기
+demo/       live 데모(자동 녹화) + 화면(영상 overlay, network timeline, alert log)
+replay/     녹화된 pcap + 영상으로 전체 pipeline 재생(오프라인 데모)
+tools/      TBD 목록, 좌석 표시, 카메라 지연·시계 오차 측정, 연기 cue
+docs/       조사 결과, 정의 후보, 캡처·녹화 절차, 시간 동기화
+common/     공통 event 타입, config(TBD 검사), latency 기록
+```
+구조는 지시안을 따랐다. 추가한 것은 두 가지다. 모듈들이 같은 event 타입과 config 로더를 써야 해서 `common/`을 만들었고, 측정·보조 스크립트를 `tools/`로 분리했다.
+
+## 설치
+```bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python numpy pyyaml opencv-python-headless onnxruntime pytest
+.venv/bin/python -m pytest -q tests        # 하드웨어 없이 전부 실행됨
+```
+보드에는 `tcpdump`, `iw`, QAIRT runtime(`/usr/lib/libQnnHtp.so`)이 필요하다. NPU 경로는 `vision/native/README.md`를 본다.
+
+## 실행
+```bash
+python -m tools.list_tbd                                   # 근거가 비어 있는 파라미터 목록
+python -m capture.monitor_setup --check                    # monitor mode 지원 여부
+python -m capture.sniffer --out data/raw/x.pcap            # 단독: 캡처
+python -m net_event.detector data/raw/x.pcap               # 단독: network detector
+python -m vision.pipeline --video data/raw/a.mp4           # 단독: vision
+python -m replay.run --pcap x.pcap --video a.mp4 --out data/runs/r1 --render   # 오프라인 전체
+sudo -E .venv/bin/python -m demo.live --run data/runs/live_001                 # 라이브(자동 녹화)
+```
+각 모듈은 단독 실행할 수 있다. 수치가 `TBD`인 파라미터가 필요한 경로는 `TBDError`로 멈추고 어떤 key인지 알려 준다(임의 값으로 돌지 않음).
+
+## 핵심 설계
+- **replay 우선**: 모든 모듈은 입력 timestamp만 쓰고 wall clock은 쓰지 않는다. 그래서 라이브에서 녹화한 pcap과 영상을 replay하면 같은 결과가 나온다. 동기화 방법은 `docs/time_sync.md`에 있다.
+- **detector 교체**: `NetDetector` interface(`update`/`advance`/`flush`) 아래에 `RuleDetector`와 `WindowModelDetector`(logistic 또는 ONNX)가 있다. 바꿀 때는 `net_event.detector` 설정만 고치면 된다.
+- **NPU + fallback**: pose는 QNN HTP 상주 runner로 돌린다. 실패하면 ONNX Runtime CPU로 넘어간다. stage별 latency(ms)를 `latency.csv`로 남긴다.
+- **개인정보**: kernel BPF(`wlan addr1/addr2 <우리 MAC>`)로 다른 기기의 frame을 수집 단계에서 버리고, 읽을 때 한 번 더 거른다. allowlist가 비어 있으면 캡처를 거부한다.
+
+## 한계
+- Wi-Fi로 전송하는 경우만 탐지한다. LTE나 Bluetooth로 휴대폰에 넘긴 뒤 휴대폰이 셀룰러로 업로드하면 sniffer로는 보이지 않는다.
+- sniffer 하나로는 위치를 알 수 없다. "누가"는 vision이 맡는다.
+- 이상 행동 후보(고개 숙임 유지 등)는 정상 필기 자세와 겹친다. 그래서 단독으로 alert를 내지 않고 network event와 겹칠 때만 낸다.

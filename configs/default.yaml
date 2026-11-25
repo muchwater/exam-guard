@@ -1,0 +1,89 @@
+# exam-guard default configuration.
+# Rule: every numeric parameter carries a "# source:" comment -- (a) paper / official doc value,
+# (b) own measurement, or (c) a calculation from those. Without a source the value is TBD and any
+# code path that needs it stops with TBDError. List open items: python -m tools.list_tbd
+# Override per site/run with: --config configs/<site>.yaml (deep-merged over this file).
+
+capture:
+  iface: TBD          # source: `iw dev` on the board after plugging the RTL8188FTV (kernel-assigned name)
+  channel: TBD        # source: 2.4 GHz channel configured on the team-owned AP used in the experiment
+  allowed_macs: TBD   # list of team-owned device MACs; source: each device's settings / `ip link`
+  snaplen: 262144     # source: tcpdump(1) man page -- default snapshot length 262144 bytes
+
+net_event:
+  detector: rule      # rule | window_model (same NetDetector interface)
+  rule:
+    burst_gap_s: TBD        # source (to measure): net_event.measure -> uplink_iat_in_upload (upper tail)
+                            #   vs gap_between_uploads_s (lower tail); pick a value separating the two
+    min_burst_bytes: TBD    # source (to measure): net_event.measure -> air_bytes_per_upload for the
+                            #   target image resolution (lower tail)
+    large_frame_bytes: TBD  # source (to measure): net_event.measure -> uplink_size_in_upload.
+                            #   reference (calculation, FCS excluded): MTU-size IPv4 packet in a CCMP-protected
+                            #   QoS data frame = 26 (QoS MAC header, IEEE 802.11) + 8 (CCMP header) + 8 (LLC/SNAP,
+                            #   RFC 1042) + 1500 (IP MTU, RFC 894) + 8 (CCMP MIC) = 1550 bytes
+    min_large_ratio: TBD    # source (to measure): net_event.measure -> fraction of in-upload frames >= large_frame_bytes
+    count_retries: true     # retransmitted frames still occupy air time, so they are counted
+  window_model:
+    path: data/models/net_logreg.npz   # produced by: python -m net_event.train
+    windows_s: [1, 2, 3, 5, 10]  # source: Lumos (Sharma et al., USENIX Security 2022) Algorithm 1, window set
+                                 #   delta in {1,2,3,5,10,...} s (paper text: "multiple timescales between 1 second
+                                 #   and 20 seconds"); here used as causal windows ending at the evaluation time
+    step_s: TBD       # source (to measure): upload_duration_s lower tail from net_event.measure (must not skip an upload)
+    threshold: TBD    # source (to measure): operating point on held-out sessions (net_event.train)
+    l2: TBD           # source (to measure): leave-one-session-out comparison (net_event.train)
+
+vision:
+  camera:
+    source: TBD       # /dev/videoN or a GStreamer pipeline; source: `python -m vision.camera --list` on the board
+    width: null       # null = driver default; actual value is written to <video>.meta.json
+    height: null
+    fps: null         # null = driver default; delivered rate: `python -m vision.camera --measure-fps 300`
+    pipeline_delay_s: TBD  # source (to measure): tools/sync_check.py (exposure -> grab delay)
+  pose:
+    backend: qnn                        # qnn (HTP NPU) | onnx (CPU); qnn falls back to onnx on failure
+    qnn_context: models/pose_htp.bin    # built on the board from the DLC (vision/native/README.md)
+    onnx: models/pose.onnx              # CPU fallback, same network
+    cpu_threads: null                   # null = ONNX Runtime default
+    conf_thres: 0.25  # source: Ultralytics 8.3.40 ultralytics/cfg/default.yaml `conf` (default 0.25 for predict)
+    iou_thres: 0.7    # source: Ultralytics 8.3.40 ultralytics/cfg/default.yaml `iou: 0.7` (NMS IoU)
+    kpt_conf: 0.5     # source: Ultralytics 8.3.40 ultralytics/engine/results.py Keypoints.__init__:
+                      #   "mask = keypoints[..., 2] < 0.5  # points with conf < 0.5 (not visible)"
+  seats: TBD          # {seat_name: [[x, y], ...] polygon in pixels}; source: tools/seat_annotator.py per camera placement
+  action:
+    classifier: rule  # rule | model
+    min_duration_s: TBD   # source (to measure): duration distribution of acted behaviors (labels, lower tail)
+    max_gap_s: TBD        # source (to measure): longest keypoint dropout inside labeled behavior intervals
+    behaviors: TBD        # definitions: docs/behavior_definitions.md; thresholds from
+                          #   `python -m vision.pipeline --dump-features` on labeled recordings. Format:
+                          #   {label: [{feature: head_drop, op: ">", value: <measured>}, ...]}
+    model:
+      onnx: data/models/action.onnx
+      labels: [normal]
+      window_frames: TBD  # source (to measure): behavior duration x delivered fps
+      threshold: TBD      # source (to measure): held-out operating point
+
+fusion:
+  pre_s: TBD          # source (to measure): timestamp error between camera and sniffer (tools/sync_check.py)
+  post_s: TBD         # source (to measure): end of photographing motion -> upload start, from combined recordings
+  behavior_labels: null   # null = every behavior label may fuse
+
+demo:
+  timeline_s: 60      # display only (no effect on detection): width of the network timeline strip
+  alert_hold_s: 10    # display only (no effect on detection): how long an alerted seat stays highlighted
+
+synth:
+  pcap:
+    seed: 0
+    device_mac: "02:00:00:00:00:01"   # locally administered address (IEEE 802 U/L bit), synthetic only
+    ap_mac: "02:00:00:00:00:fe"
+    channel_mhz: TBD      # source: 2412 + 5 * (capture.channel - 1) MHz for 2.4 GHz channels 1-13 (IEEE 802.11)
+    rssi_dbm: TBD         # source (to measure): net_event.measure (radiotap antenna signal) -- not used by detectors
+    duration_s: TBD       # experiment design
+    upload_interval_s: TBD    # experiment variable; source: chosen per experiment, see docs/capture_protocol.md
+    measured_upload: TBD      # path to net_event.measure JSON of the upload scenario (sizes, IATs, bytes/upload)
+    measured_background: TBD  # path to net_event.measure JSON of the idle or browsing scenario
+  keypoints:
+    seed: 0
+    fps: TBD                  # source (to measure): delivered camera fps (vision.camera --measure-fps)
+    duration_s: TBD           # experiment design
+    measured_pose_stats: TBD  # path to synth/pose_stats.py output from labeled team recordings

@@ -2,6 +2,7 @@
 
     python -m capture.scenario_upload --image data/ref/page.jpg --resolution 1280x720 --quality <q> \
         --interval <s> --count <n> --url http://<server>:<port>/upload --out data/raw/up.labels.jsonl
+    (IPv6 link-local server: --url 'http://[fe80::1%25wlan0]:8080/upload' pins the outgoing interface)
 
 Only the experiment variables (interval, resolution) change between runs; image content, JPEG
 quality, server, transport (HTTP/1.1 over TCP, one connection per upload) and AP stay fixed.
@@ -14,7 +15,7 @@ import argparse
 import http.client
 import json
 import time
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import cv2
 
@@ -45,7 +46,7 @@ def main() -> None:
         for k in range(a.count):
             time.sleep(max(0.0, t_next - time.time()))
             t0 = time.time()
-            conn = http.client.HTTPConnection(u.hostname, u.port or 80, timeout=30)
+            conn = http.client.HTTPConnection(unquote(u.hostname), u.port or 80, timeout=30)
             conn.request("POST", u.path or "/upload", body, {"Content-Type": "image/jpeg"})
             status = conn.getresponse().status
             conn.close()

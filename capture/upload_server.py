@@ -1,6 +1,6 @@
 """Team-owned upload sink for capture experiments (runs on a team laptop on the same AP).
 
-    python -m capture.upload_server --port 8080 --log data/raw/server_log.jsonl
+    python -m capture.upload_server --port 8080 --log data/raw/server_log.jsonl [--host ::]
 
 Accepts POST /upload, discards the body after counting it, logs receive start/end times.
 Images never leave the team's own network.
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import socket
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -42,8 +43,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, required=True)
     ap.add_argument("--log", required=True)
+    ap.add_argument("--host", default="0.0.0.0", help="'::' listens on IPv6 (incl. link-local)")
     a = ap.parse_args()
-    ThreadingHTTPServer(("0.0.0.0", a.port), make_handler(a.log)).serve_forever()
+    server_cls = ThreadingHTTPServer
+    if ":" in a.host:
+        server_cls = type("ThreadingHTTPServer6", (ThreadingHTTPServer,), {"address_family": socket.AF_INET6})
+    server_cls((a.host, a.port), make_handler(a.log)).serve_forever()
 
 
 if __name__ == "__main__":

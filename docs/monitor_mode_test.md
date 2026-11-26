@@ -49,12 +49,58 @@ NAV = 3·SIFS + CTS + DATA + BA
 - 따라서 데이터는 HT20 MCS7로 실제로 전송됐고, 동글이 받지 못한 것이다.
 - 부수 발견: `synth/netsim/phy.py`에는 2.4 GHz OFDM PPDU의 signal extension 6 µs가 빠져 있다. PPDU당 6 µs이므로 크기·간격 feature에 미치는 영향은 작다(TBD: 반영 여부).
 
+## 대안 1: RTS의 NAV로 업로드 구분 (같은 동글, 2026-11-26)
+### 왜 RTS가 보이나
+- AP 비콘의 HT Operation이 `HT protection: nonmember`였다(`iw dev wlan0 scan dump`). 이 모드에서는 11n 기기가 HT 전송 앞에 legacy 보호 프레임(RTS/CTS 또는 CTS-to-self)을 보낸다.
+- 보호 프레임은 legacy 속도라 이 동글로도 잡힌다. 보드(Broadcom)는 작은 ping까지 모든 HT 전송을 RTS로 보호했다.
+- 따라서 이 신호가 있는지는 **AP의 protection 모드와 송신 기기의 구현에 달려 있다**. 주변에 non-HT 기기가 없어 protection이 꺼지면 사라질 수 있다.
+
+### 시험 방법
+- **업로드 경로:** 보드의 유선 포트에 macvlan을 만들어 별도 netns에 넣고, 그 안에서 `capture.upload_server --host ::`를 띄웠다. 보드 wlan0에서 IPv6 link-local 주소(`%wlan0`)로 업로드했다.
+  - 경로: wlan0 → AP → 유선 → 보드. 우리 기기만 쓴다.
+  - RTT는 약 9 ms로, 유선 직결(1 ms 미만)이 아니라 무선 경로임을 확인했다.
+- **업로드 내용:** `data/ref/page_proxy.png`를 JPEG(quality 95)로 인코딩했다. 640x480(114,993 B) 5회와 1600x1200(528,833 B) 5회를 4초 간격으로 보냈다.
+- **비교군:** 같은 경로로 2 MB 다운로드를 5회 했다.
+- **정답 시각:** 업로드 시각과 캡처 시각이 같은 보드 시계라 동기화 오차가 없다.
+
+### 결과
+| | 횟수 | 회당 보드 RTS | 회당 NAV 합 | 회당 NAV 최대 |
+|---|---|---|---|---|
+| 업로드 115 KB | 5 | 4–9 | 2.1–6.1 ms | **906–2730 µs** |
+| 업로드 529 KB | 5 | 7–11 | 9.1–23.9 ms | **3770–5514 µs** |
+| 다운로드 2 MB | 5 | 42–65 (TCP ACK 송신) | 8.8–14.5 ms | **422–742 µs** |
+| 전송 없음 | 72 s | 1 | – | 150 µs |
+
+- **긴 NAV가 기준이 된다:** 0.8 ms 이상의 NAV는 업로드에서만 나왔다. 업로드는 10/10이 해당했고, 다운로드는 0/5였다. 긴 NAV는 큰 업링크 A-MPDU를 뜻한다(최대값 5.5 ms ≈ PPDU 상한 5484 µs).
+- **여유가 작다:** 115 KB 업로드의 최소값 906 µs와 다운로드의 최대값 742 µs 차이가 크지 않다. TCP slow start 초기에는 A-MPDU가 작기 때문이다.
+- **NAV 합으로는 구분이 안 된다.** 업로드와 다운로드의 범위가 겹친다.
+- **포착률이 낮다:** 529 KB 업로드의 데이터 전송 시간은 MCS7로 약 70 ms인데, 잡힌 NAV 합은 9–24 ms였다.
+  - RTS 뒤 44 µs(RTS 전송 시간 + SIFS)에 CTS가 오는 쌍이 7–12 ms 간격으로 띄엄띄엄 보였다. 그 사이의 RTS/CTS 쌍은 통째로 놓친 것으로 보인다.
+  - 업로드 크기를 이 값으로 추정하기는 어렵다.
+- **TSFT는 쓸 수 없었다:** 이 드라이버의 radiotap TSFT는 0.24 s 안에서 수백 초씩 튀었다.
+
+### 판단
+- "언제"를 알려 주는 보조 신호로는 쓸 수 있다.
+- 다만 세 가지 제약이 있다: protection 모드에 의존하고, 포착률이 낮고, 다운로드와의 여유가 작다.
+- 현재 detector(크기와 간격 기반)를 그대로 대체할 수는 없다.
+
+## 대안 2: Realtek vendor 드라이버 (미완료)
+- 보드에 `linux-headers-6.8.0-1089-qcom`을 apt로 설치했다.
+- `Mange/rtl8192eu-linux-driver`(commit c629cc9, 2026-09-06, `CONFIG_WIFI_MONITOR = y`)를 `~/drivers`에 받았다.
+- 모듈 빌드는 실행 권한 문제로 아직 하지 않았다.
+- 빌드 명령(설치 없이 모듈만, 재부팅하면 원래 드라이버로 돌아간다):
+```bash
+cd ~/drivers/rtl8192eu-linux-driver
+make -j8 CONFIG_PLATFORM_I386_PC=n CONFIG_PLATFORM_ARM_AARCH64=y
+sudo rmmod rtl8xxxu && sudo insmod ./8192eu.ko      # 시험 후: sudo rmmod 8192eu && sudo modprobe rtl8xxxu
+```
+
 ## 다음 단계
 1. **동글 교체 (권장)**: 보드 커널에 드라이버와 firmware가 이미 있는 칩을 쓴다. 산 뒤에는 이 문서의 시험을 그대로 반복해 HT 프레임이 잡히는지 확인한다.
-   - MediaTek `mt76x2u`(MT7612U), `mt7921u`(MT7921AU, firmware `WIFI_RAM_CODE_MT7961_1.bin` 있음)
-   - Atheros `ath9k_htc`(AR9271, firmware `htc_9271.fw` 있음)
-2. **대안 (부분적)**: RTS/CTS의 NAV로 데이터 크기를 추정한다. legacy 속도라 이 동글로도 잡힌다. 단, 송신 기기가 RTS/CTS를 쓸 때만 가능하다.
-3. **비권장**: 보드에 Realtek vendor 드라이버(out-of-tree, DKMS)를 설치한다. 외부 커널 코드이고, 이 문제가 해결된다는 근거도 아직 없다.
+   - MediaTek `mt76x2u`(MT7612U, `mt7662u.bin` 있음), `mt7921u`(MT7921AU, `WIFI_RAM_CODE_MT7961_1.bin` 있음)
+   - Atheros `ath9k_htc`(AR9271, `htc_9271.fw` 있음)
+2. 대안 2(vendor 드라이버)로 HT 데이터 프레임이 잡히면, 지금 동글을 그대로 쓴다.
+3. 대안 1(RTS NAV)은 위 두 가지가 모두 실패했을 때의 보조 수단으로 남긴다.
 
 ## 재현
 ```bash

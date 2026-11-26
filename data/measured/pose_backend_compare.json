@@ -1,0 +1,71 @@
+{
+ "host": "ubuntu",
+ "frames": 60,
+ "repeat": 3,
+ "match_iou": 0.5,
+ "reference": {
+  "backend": "onnx-cpu fp32",
+  "persons": 92,
+  "wall_ms_median": 298.8101385003574,
+  "wall_ms_p90": 301.8629575995874
+ },
+ "variants": {
+  "w8a8": {
+   "context": "models/pose_w8a8_htp.bin",
+   "input_dtype": "0x408",
+   "output_dtype": "0x408",
+   "raw_output_rel_mae_median": 0.013385031184199645,
+   "persons_matched": 0,
+   "persons_missed": 92,
+   "persons_extra": 0,
+   "recall_vs_ref": 0.0,
+   "kpt_err_norm_median": null,
+   "kpt_err_norm_p90": null,
+   "head_drop_err_signed_median": null,
+   "head_drop_abs_err_median": null,
+   "head_drop_abs_err_p90": null,
+   "head_drop_pairs": 0,
+   "wall_ms_median": 17.31651900036013,
+   "wall_ms_p90": 22.424211299949093,
+   "execute_ms_median": 6.006
+  },
+  "w8a16": {
+   "context": "models/pose_w8a16_htp.bin",
+   "input_dtype": "0x416",
+   "output_dtype": "0x416",
+   "raw_output_rel_mae_median": 0.005685123530607714,
+   "persons_matched": 92,
+   "persons_missed": 0,
+   "persons_extra": 2,
+   "recall_vs_ref": 1.0,
+   "kpt_err_norm_median": 0.009834613651037216,
+   "kpt_err_norm_p90": 0.020598774775862694,
+   "head_drop_err_signed_median": -0.11301561863286533,
+   "head_drop_abs_err_median": 0.11301561863286533,
+   "head_drop_abs_err_p90": 0.14610008416101627,
+   "head_drop_pairs": 57,
+   "wall_ms_median": 32.545582999773615,
+   "wall_ms_p90": 38.72366810010135,
+   "execute_ms_median": 14.073
+  },
+  "w8a16pc": {
+   "context": "models/pose_w8a16pc_htp.bin",
+   "input_dtype": "0x416",
+   "output_dtype": "0x416",
+   "raw_output_rel_mae_median": 0.0018975866577537678,
+   "persons_matched": 91,
+   "persons_missed": 1,
+   "persons_extra": 0,
+   "recall_vs_ref": 0.9891304347826086,
+   "kpt_err_norm_median": 0.0039216699078679085,
+   "kpt_err_norm_p90": 0.011381821893155576,
+   "head_drop_err_signed_median": -0.015536333292466181,
+   "head_drop_abs_err_median": 0.01576445486202256,
+   "head_drop_abs_err_p90": 0.05260951065666474,
+   "head_drop_pairs": 59,
+   "wall_ms_median": 34.45789049965242,
+   "wall_ms_p90": 38.408334600262606,
+   "execute_ms_median": 14.056000000000001
+  }
+ }
+}

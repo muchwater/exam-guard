@@ -42,7 +42,8 @@ vision:
     pipeline_delay_s: TBD  # source (to measure): tools/sync_check.py (exposure -> grab delay)
   pose:
     backend: qnn                        # qnn (HTP NPU) | onnx (CPU); qnn falls back to onnx on failure
-    qnn_context: models/pose_htp.bin    # built on the board from the DLC (vision/native/README.md)
+    qnn_context: models/pose_htp.bin    # built on the board from the DLC (vision/native/README.md); w8a16 per-channel
+                                        #   chosen by data/measured/pose_backend_compare.json (board measurement)
     onnx: models/pose.onnx              # CPU fallback, same network
     cpu_threads: null                   # null = ONNX Runtime default
     conf_thres: 0.25  # source: Ultralytics 8.3.40 ultralytics/cfg/default.yaml `conf` (default 0.25 for predict)

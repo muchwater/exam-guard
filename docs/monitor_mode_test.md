@@ -84,23 +84,39 @@ NAV = 3·SIFS + CTS + DATA + BA
 - 다만 세 가지 제약이 있다: protection 모드에 의존하고, 포착률이 낮고, 다운로드와의 여유가 작다.
 - 현재 detector(크기와 간격 기반)를 그대로 대체할 수는 없다.
 
-## 대안 2: Realtek vendor 드라이버 (미완료)
+## 대안 2: Realtek vendor 드라이버 → 실패
+### 준비
 - 보드에 `linux-headers-6.8.0-1089-qcom`을 apt로 설치했다.
-- `Mange/rtl8192eu-linux-driver`(commit c629cc9, 2026-09-06, `CONFIG_WIFI_MONITOR = y`)를 `~/drivers`에 받았다.
-- 모듈 빌드는 실행 권한 문제로 아직 하지 않았다.
-- 빌드 명령(설치 없이 모듈만, 재부팅하면 원래 드라이버로 돌아간다):
+- `Mange/rtl8192eu-linux-driver`(commit c629cc9, 2026-09-06, `CONFIG_WIFI_MONITOR = y`)를 `~/drivers`에 받아 빌드했다(사용자가 실행).
+- 설치하지 않고 이번 부팅에만 올렸다:
 ```bash
 cd ~/drivers/rtl8192eu-linux-driver
 make -j8 CONFIG_PLATFORM_I386_PC=n CONFIG_PLATFORM_ARM_AARCH64=y
 sudo rmmod rtl8xxxu && sudo insmod ./8192eu.ko      # 시험 후: sudo rmmod 8192eu && sudo modprobe rtl8xxxu
 ```
 
+### 결과
+- **monitor mode, 2번 채널 20 MHz, 같은 ping 시험:** 저장된 프레임은 58개였고 **HT 데이터 프레임은 0개**였다.
+  - 잡힌 것: BA 30, CTS 15, RTS 12, 1 Mb/s 데이터 1. 모두 legacy 속도다.
+  - BlockAck가 잡히기 시작한 것만 rtl8xxxu와 다르다.
+- **수신 필터 레지스터 (monitor 상태, 드라이버의 `/proc/net/rtl8192eu/<if>/read_reg`):**
+  - RCR = `0x9000382f`: 모든 물리 주소 수신, BSSID 검사 없음.
+  - RXFLTMAP2(데이터) = `0xffff`: 모든 subtype 허용.
+  - 필터 설정만 보면 "모두 받기"다.
+- **managed 연결 대조:** 같은 동글이 AP에 연결되면 자기에게 온 프레임을 **MCS10**(2SS)으로 받았다(`rx_signal`).
+  - 같은 시점에 보드 wlan0은 부하 시 rx MCS4–7, tx 72.2 Mb/s(MCS7 SGI)였다.
+  - 따라서 전파 환경이나 수신 성능의 문제가 아니다.
+
+### 결론
+- 드라이버 두 종류(`rtl8xxxu`, vendor)에서 결과가 같았고, 필터 레지스터도 모두 받기로 설정돼 있었다.
+- 그런데도 칩은 다른 기기 사이의 HT 데이터(A-MPDU)를 host로 넘기지 않는다. **RTL8192EU로는 HT 데이터 캡처가 불가능**하다고 판단한다.
+- 시험 후 원래 드라이버(`rtl8xxxu`)로 되돌렸다.
+
 ## 다음 단계
 1. **동글 교체 (권장)**: 보드 커널에 드라이버와 firmware가 이미 있는 칩을 쓴다. 산 뒤에는 이 문서의 시험을 그대로 반복해 HT 프레임이 잡히는지 확인한다.
    - MediaTek `mt76x2u`(MT7612U, `mt7662u.bin` 있음), `mt7921u`(MT7921AU, `WIFI_RAM_CODE_MT7961_1.bin` 있음)
    - Atheros `ath9k_htc`(AR9271, `htc_9271.fw` 있음)
-2. 대안 2(vendor 드라이버)로 HT 데이터 프레임이 잡히면, 지금 동글을 그대로 쓴다.
-3. 대안 1(RTS NAV)은 위 두 가지가 모두 실패했을 때의 보조 수단으로 남긴다.
+2. 대안 1(RTS NAV)은 새 동글이 오기 전까지, 또는 새 동글도 실패할 때를 위한 보조 수단으로 남긴다.
 
 ## 재현
 ```bash

@@ -29,7 +29,8 @@ datasets/   공개 데이터 index (ExamCheat-MultiV, CC BY-SA 4.0)
 demo/       live 데모(자동 녹화) + 화면(영상 overlay, network timeline, alert log)
 replay/     녹화된 pcap + 영상으로 전체 pipeline 재생(오프라인 데모)
 tools/      TBD 목록, 좌석 표시, 카메라 지연·시계 오차 측정, 연기 cue, RTT/HTTP·TLS 바이트 측정,
-            ExamCheat pose 추출·통계, 대용 페이지 이미지, offline 데모 세션 생성
+            ExamCheat pose 추출·통계, 대용 페이지 이미지, offline 데모 세션 생성(합성 또는 실측 패킷),
+            실측 캡처(spark3 monitor 스크립트, 보드 OTA 세션, 시계 표식→index), pose 양자화·NPU 비교
 docs/       조사 결과, 정의 후보, 캡처·녹화 절차, 시간 동기화
 common/     공통 event 타입, config(TBD 검사), latency 기록
 ```
@@ -107,7 +108,13 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
   - 계획했던 RTL8188FTV도 같은 드라이버라 같은 위험이 있다.
 - 실측 캡처(`docs/real_capture_spark3.md`): 연구실 머신 spark3의 내장 Wi-Fi(MT7925)로 실제 업로드 패킷을 잡았다.
   - 합성 보정 그대로 적용한 결과: window model 10/10(오탐 4), rule 5/10(오탐 0).
-  - 실측 데이터로 다시 보정해야 한다.
+  - 실측 데이터로 다시 보정해야 한다. 녹화 절차는 `docs/real_capture_runbook.md`에 있다(사용자는 spark3 sudo 1회).
+  - 실측 업로드 버스트로 만든 오프라인 데모(composite)에서 net event 2/2, alert 1건(S1)이 나왔다.
+- NPU(`vision/native/README.md`): pose 모델을 QAIRT 2.46으로 w8a16(가중치 채널별)으로 양자화해 보드 HTP에서 돌린다.
+  - vision 전체 시간: 41 ms/frame(약 24 fps). CPU fp32는 316 ms다.
+  - 정확도(CPU fp32 대비): 키포인트 오차 중앙값 0.39%, head_drop 편향 −0.016.
+  - w8a8은 출력 양자화 때문에 사람을 하나도 검출하지 못했다.
+  - B1 임계값은 NPU 백엔드로 다시 측정한다.
 - 보드 측정(카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
 
 ## 한계

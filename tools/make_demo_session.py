@@ -8,6 +8,13 @@
         --out data/runs/demo_synth/replay --config configs/netsim_v1_derived.yaml \
         --config configs/examcheat.yaml --config data/runs/demo_synth/session.yaml --render
 
+Real packets instead of netsim (DEMO COMPOSITE, see --real-session): every upload burst is a REAL capture
+(tools/real_session: sniffer clock via in-band markers), cut with --real-window seconds of context and
+re-timed so that the upload starts at the requested time; only the timing is constructed.
+
+    python -m tools.make_demo_session --out data/runs/demo_real --clip ... --upload-in-class mobile_phone \
+        --real-session data/raw/real/<s> --real-device <team MAC> --real-resolution 1600x1200
+
 Writes video.mp4 (clips concatenated) + video.frames.csv (t = t0 + frame_index / container fps) +
 video.meta.json, net.pcap (+ labels) from synth.netsim with uploads at the chosen times, session.json
 (clip spans and classes) and session.yaml (overlay for replay).
@@ -30,7 +37,11 @@ import yaml
 
 from common.config import load_config
 from datasets.examcheat import ATTRIBUTION, CLASSES, parse_prefix_name
+from capture.macfilter import MacAllowlist
+from capture.dot11 import parse_frame
+from capture.pcap_io import iter_raw, write_pcap
 from synth.netsim.scenario import run as netsim_run
+from tools.real_session import load_jsonl, marker_offset, shift
 
 
 def concat(clips: list[str], out: Path, t0: float) -> list[dict]:
@@ -72,6 +83,33 @@ def concat(clips: list[str], out: Path, t0: float) -> list[dict]:
     return spans, size
 
 
+def real_composite(sdir: Path, device: str, uploads: str, markers: str, pcap: str, resolution: str | None,
+                   window: float, targets: list[float], out_pcap: Path) -> dict:
+    """Real upload bursts re-timed to `targets` (DEMO COMPOSITE: packet content/timing inside a burst is real)."""
+    dev = device.lower()
+    off, picked = marker_offset(sdir / pcap, load_jsonl(sdir / markers), dev)
+    real = [u for u in shift(load_jsonl(sdir / uploads), off) if resolution in (None, u.get("resolution"))]
+    if not real:
+        raise SystemExit(f"no real uploads with resolution {resolution}")
+    allow = MacAllowlist([dev])
+    raw = [(ts, data) for ts, data, orig, lt in iter_raw(open(sdir / pcap, "rb"))
+           if (p := parse_frame(ts, data, orig, lt)) is not None and allow.match(p)]
+    frames, labels, spans = [], [], []
+    for i, t in enumerate(targets):
+        u = real[i % len(real)]
+        d = t - u["t_start"]
+        lo, hi = u["t_start"] - window + d, u["t_end"] + window + d
+        if spans and lo < spans[-1][1]:
+            raise SystemExit(f"upload windows overlap at {t:.2f}s: increase the spacing or lower --real-window")
+        spans.append((lo, hi))
+        frames += [(ts + d, data) for ts, data in raw if u["t_start"] - window <= ts <= u["t_end"] + window]
+        labels.append({**u, "t_start": u["t_start"] + d, "t_end": u["t_end"] + d, "real_t_start": u["t_start"]})
+    write_pcap(out_pcap, sorted(frames, key=lambda f: f[0]))
+    out_pcap.with_suffix(".labels.jsonl").write_text("".join(json.dumps(r) + "\n" for r in labels))
+    return {"source": str(sdir), "clock_offset_s": off, "markers_used": len(picked), "window_s": window,
+            "resolution": resolution, "frames": len(frames), "uploads": len(labels)}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", required=True)
@@ -80,9 +118,17 @@ def main() -> None:
                     help="upload start, seconds from the session start")
     ap.add_argument("--upload-in-class", action="append", default=[], choices=CLASSES,
                     help="also start one upload at the middle of every clip of this class")
-    ap.add_argument("--preset", required=True)
-    ap.add_argument("--mcs", type=int, required=True)
-    ap.add_argument("--resolution", required=True)
+    ap.add_argument("--preset", help="netsim preset (synthetic packets)")
+    ap.add_argument("--mcs", type=int)
+    ap.add_argument("--resolution")
+    ap.add_argument("--real-session", help="real capture session dir (tools/real_session layout)")
+    ap.add_argument("--real-device", help="team MAC of the uploader in the real session")
+    ap.add_argument("--real-uploads", default="uploads.labels.jsonl")
+    ap.add_argument("--real-markers", default="markers.jsonl")
+    ap.add_argument("--real-pcap", default="capture.pcap")
+    ap.add_argument("--real-resolution", help="re-use only real uploads of this resolution")
+    ap.add_argument("--real-window", type=float, default=1.0,
+                    help="DEMO-ONLY: seconds of real capture kept before/after each upload")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--t0", type=float, default=0.0)
     ap.add_argument("--tail", type=float, default=5.0, help="seconds of network capture after the last clip")
@@ -95,9 +141,16 @@ def main() -> None:
     t_end = spans[-1]["t_end"] + a.tail
     ups = sorted([a.t0 + x for x in a.upload_at] +
                  [(s["t_start"] + s["t_end"]) / 2 for s in spans if s["class"] in a.upload_in_class])
-    meta = netsim_run(cfg, a.preset, None, a.mcs, a.resolution, a.seed, out / "net.pcap", a.t0,
-                      t_end - a.t0, None, None, ups)
-    dev = cfg["synth"]["netsim"]["macs"]["device"]
+    if a.real_session:
+        meta = real_composite(Path(a.real_session), a.real_device, a.real_uploads, a.real_markers, a.real_pcap,
+                              a.real_resolution, a.real_window, ups, out / "net.pcap")
+        dev = a.real_device.lower()
+    else:
+        if a.preset is None or a.mcs is None or a.resolution is None:
+            raise SystemExit("--preset, --mcs and --resolution are required without --real-session")
+        meta = netsim_run(cfg, a.preset, None, a.mcs, a.resolution, a.seed, out / "net.pcap", a.t0,
+                          t_end - a.t0, None, None, ups)
+        dev = cfg["synth"]["netsim"]["macs"]["device"]
     (out / "session.json").write_text(json.dumps({"clips": spans, "uploads_at": ups, "netsim": meta,
                                                   "attribution": ATTRIBUTION}, indent=1) + "\n")
     overlay = {
@@ -108,17 +161,22 @@ def main() -> None:
                    "action": {"min_duration_s": 0.0}},
         "fusion": {"pre_s": 0.0, "post_s": 0.0},
     }
+    mac_note = ("# capture.allowed_macs: the real uploader's team MAC (--real-device); packets are REAL bursts\n"
+                f"#   re-timed to the clips (DEMO COMPOSITE, --real-window {a.real_window} s of context).\n"
+                if a.real_session else
+                "# capture.allowed_macs: the synthetic device MAC (synth.netsim.macs.device).\n")
     head = ("# OFFLINE DEMO SESSION overlay generated by tools/make_demo_session.py -- not for the live system.\n"
-            "# capture.allowed_macs: the synthetic device MAC (synth.netsim.macs.device).\n"
+            + mac_note +
             "# vision.seats.S1: whole frame (calc from the video size): one examinee per ExamCheat V1 clip.\n"
             "# vision.pose.backend onnx: dev PC has no NPU. camera.pipeline_delay_s 0: timestamps come from the\n"
             "#   frame index (file replay), there is no camera pipeline.\n"
             "# DEMO-ONLY (not measured): action.min_duration_s 0 = no minimum duration; fusion.pre_s/post_s 0 =\n"
-            "#   one shared synthetic clock and uploads placed inside the behaviour clips by construction.\n")
+            "#   uploads placed inside the behaviour clips by construction (one clock).\n")
     (out / "session.yaml").write_text(head + yaml.safe_dump(overlay, sort_keys=False))
     print(json.dumps({"clips": [(Path(s["clip"]).name, s["class"], round(s["t_start"], 2), round(s["t_end"], 2))
                                 for s in spans], "uploads_at": [round(u, 2) for u in ups],
-                      "frames": meta["frames"]}, indent=1))
+                      "frames": meta["frames"], "packets": "real composite" if a.real_session else "netsim"},
+                     indent=1))
 
 
 if __name__ == "__main__":

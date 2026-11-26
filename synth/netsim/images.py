@@ -1,7 +1,8 @@
 """JPEG payload sizes: encode a reference page image at a camera resolution (calculation, not a guess).
 
 The camera frame is filled by the page: center-crop the page to the frame aspect ratio, resize with
-INTER_AREA, encode with OpenCV at the given quality (same calls as capture/scenario_upload.py).
+INTER_AREA, encode with OpenCV at the given quality. capture/scenario_upload.py and tools/ota_session.py
+upload exactly these bytes (jpeg_encode), so synthetic and real payloads are the same.
 """
 from __future__ import annotations
 
@@ -17,6 +18,11 @@ def parse_resolution(s: str) -> tuple[int, int]:
 
 @lru_cache(maxsize=None)
 def jpeg_bytes(image: str, resolution: str, quality: int) -> int:
+    return len(jpeg_encode(image, resolution, quality))
+
+
+@lru_cache(maxsize=None)
+def jpeg_encode(image: str, resolution: str, quality: int) -> bytes:
     img = cv2.imread(image)
     if img is None:
         raise FileNotFoundError(image)
@@ -35,4 +41,4 @@ def jpeg_bytes(image: str, resolution: str, quality: int) -> int:
     ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, int(quality)])
     if not ok:
         raise RuntimeError("JPEG encode failed")
-    return len(buf)
+    return buf.tobytes()

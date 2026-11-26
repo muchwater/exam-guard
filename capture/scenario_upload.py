@@ -17,16 +17,12 @@ import json
 import time
 from urllib.parse import unquote, urlparse
 
-import cv2
+from synth.netsim.images import jpeg_encode
 
 
 def encode(image: str, resolution: str, quality: int) -> bytes:
-    w, h = (int(x) for x in resolution.lower().split("x"))
-    img = cv2.resize(cv2.imread(image), (w, h), interpolation=cv2.INTER_AREA)
-    ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, quality])
-    if not ok:
-        raise RuntimeError("JPEG encode failed")
-    return buf.tobytes()
+    """Same JPEG bytes as the synthetic set (center-crop to the frame aspect, INTER_AREA, OpenCV quality)."""
+    return jpeg_encode(image, resolution, quality)
 
 
 def main() -> None:

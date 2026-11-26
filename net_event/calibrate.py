@@ -188,7 +188,11 @@ def main() -> None:
         "rule": {"burst_gap_s": gap, "min_burst_bytes": min_bytes, "large_frame_bytes": large,
                  "min_large_ratio": min_ratio},
         "window_model": {"path": a.model_out, "step_s": step, "threshold": thr, "l2": l2_best}}}
-    text = (f"# DERIVED FROM SYNTHETIC DATA - provisional until real captures exist.\n# source: {src}\n"
+    kinds = {r.get("source", "synthetic") for r in runs}
+    banner = ("DERIVED FROM REAL CAPTURES (tools/real_session)" if kinds == {"real"} else
+              "DERIVED FROM SYNTHETIC DATA - provisional until real captures exist" if kinds == {"synthetic"} else
+              "DERIVED FROM MIXED REAL + SYNTHETIC DATA")
+    text = (f"# {banner}.\n# source: {src}\n"
             f"# rules: see net_event/calibrate.py docstring\n" + yaml.safe_dump(overlay, sort_keys=False))
     Path(a.out_config).write_text(text)
     print(json.dumps({"rule": res["rule"], "window_model": {k: res["window_model"][k] for k in

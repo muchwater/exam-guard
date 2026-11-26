@@ -5,7 +5,8 @@
 # Override per site/run with: --config configs/<site>.yaml (deep-merged over this file).
 
 capture:
-  iface: TBD          # source: `iw dev` on the board after plugging the RTL8188FTV (kernel-assigned name)
+  iface: TBD          # source: `iw dev` on the board after plugging the capture dongle (kernel-assigned name).
+                      #   RTL8192EU/rtl8xxxu captured NO HT data frames in monitor mode (docs/monitor_mode_test.md)
   channel: TBD        # source: 2.4 GHz channel configured on the team-owned AP used in the experiment
   allowed_macs: TBD   # list of team-owned device MACs; source: each device's settings / `ip link`
   snaplen: 262144     # source: tcpdump(1) man page -- default snapshot length 262144 bytes

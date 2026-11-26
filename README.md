@@ -46,7 +46,11 @@ uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python numpy pyyaml opencv-python-headless onnxruntime pytest
 .venv/bin/python -m pytest -q tests        # 하드웨어 없이 전부 실행됨
 ```
-보드에는 `tcpdump`, `iw`, QAIRT runtime(`/usr/lib/libQnnHtp.so`)이 필요하다. NPU 경로는 `vision/native/README.md`를 본다.
+보드(Ubuntu 24.04)에는 `tcpdump`, `iw`, QAIRT runtime(`/usr/lib/libQnnHtp.so`)이 필요하다. Rubik Pi 3 이미지에는 모두 들어 있다(QAIRT 2.46 apt 패키지). onnxruntime만 따로 설치한다.
+```bash
+python3 -m venv --system-site-packages .venv && .venv/bin/pip install onnxruntime
+```
+보드별 설정(실제 MAC, 인터페이스, 채널)은 `configs/site_<이름>.yaml`에 두고 `--config`로 덮어쓴다. 이 파일은 실제 MAC이 들어 있어 git에 올리지 않는다. NPU 경로는 `vision/native/README.md`를 본다.
 
 ## 실행
 ```bash
@@ -85,7 +89,7 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
 - **NPU + fallback**: pose는 QNN HTP 상주 runner로 돌린다. 실패하면 ONNX Runtime CPU로 넘어간다. stage별 latency(ms)를 `latency.csv`로 남긴다.
 - **개인정보**: kernel BPF(`wlan addr1/addr2 <우리 MAC>`)로 다른 기기의 frame을 수집 단계에서 버리고, 읽을 때 한 번 더 거른다. allowlist가 비어 있으면 캡처를 거부한다.
 
-## 현재 상태 (2026-11-25)
+## 현재 상태 (2026-11-26)
 - 이상 행동: **B1 고개 숙임 유지 + B2 안경 만지기**로 확정했다.
   - ExamCheat-MultiV에서 B1 `head_drop`은 정상 필기와 구분되지 않았다(frame AUC 0.506).
   - B2는 데이터셋에 양성 샘플이 없다.
@@ -98,7 +102,10 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
   - 업로드 전용 기기: rule과 window model 모두 recall 1.0, 오탐 0.
   - 브라우징 중 업로드: rule은 0/9이고 window model은 9/9.
   - 합성 결과이므로 실제 성능의 상한으로 본다(`docs/netsim_model.md`).
-- 보드 측정(monitor mode, 카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
+- monitor mode 실측(`docs/monitor_mode_test.md`): RTL8192EU + `rtl8xxxu`는 다른 기기의 **HT 데이터 프레임을 하나도 잡지 못했다**(legacy 속도 프레임만 잡힘).
+  - 업로드 feature를 만들려면 동글을 바꿔야 한다. 후보는 `mt76x2u`/`mt7921u`/`ath9k_htc` 칩으로, 보드 커널에 드라이버가 이미 있다.
+  - 계획했던 RTL8188FTV도 같은 드라이버라 같은 위험이 있다.
+- 보드 측정(카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
 
 ## 한계
 - Wi-Fi로 전송하는 경우만 탐지한다. LTE나 Bluetooth로 휴대폰에 넘긴 뒤 휴대폰이 셀룰러로 업로드하면 sniffer로는 보이지 않는다.

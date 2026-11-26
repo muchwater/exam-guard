@@ -96,6 +96,7 @@ def main() -> None:
     ap.add_argument("--channel", type=int, help="default: config capture.channel")
     ap.add_argument("--check", action="store_true", help="only report monitor-mode support per interface")
     ap.add_argument("--restore", action="store_true", help="switch the interface back to managed mode")
+    ap.add_argument("--config", action="append", default=[], help="override yaml (repeatable)")
     a = ap.parse_args()
 
     ifaces = list_wifi_ifaces()
@@ -105,7 +106,7 @@ def main() -> None:
             print(f"{iface} ({phy}): monitor={'yes' if supports_monitor(phy) else 'NO'}"
                   + (f"  [in use: {used}]" if used else ""))
         return
-    cfg = load_config()
+    cfg = load_config(*a.config)
     iface = a.iface or require(cfg, "capture.iface")
     if iface not in ifaces:
         sys.exit(f"{iface} not found; wifi interfaces: {', '.join(ifaces) or 'none'}")

@@ -16,3 +16,5 @@ data/external/
 data/derived/
 models/*.onnx
 data/synth/
+# per-site overrides hold real MACs of team devices: kept off the public repo
+configs/site_*.yaml

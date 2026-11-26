@@ -4,7 +4,7 @@ tcpdump writes the filtered pcap stream to stdout (`-U -w -`); this module tees 
 bytes to disk (so every live run can be replayed) and decodes them on the fly.
 Frames of non-team devices are dropped by the kernel BPF filter before user space.
 
-    sudo python -m capture.sniffer --out data/raw/run1.pcap --duration 60
+    sudo python -m capture.sniffer --out data/raw/run1.pcap --duration 60 [--config configs/site_x.yaml]
 """
 from __future__ import annotations
 
@@ -93,8 +93,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Capture own-device 802.11 frames to pcap.")
     ap.add_argument("--out", required=True)
     ap.add_argument("--duration", type=float, default=None, help="seconds; default: until Ctrl-C")
+    ap.add_argument("--config", action="append", default=[], help="override yaml (repeatable)")
     a = ap.parse_args()
-    s = from_config(a.out).start()
+    s = from_config(a.out, load_config(*a.config)).start()
     t0 = time.time()
     try:
         while a.duration is None or time.time() - t0 < a.duration:

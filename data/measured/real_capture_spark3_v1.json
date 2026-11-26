@@ -1,0 +1,216 @@
+{
+ "what": "real over-the-air capture: Rubik Pi 3 wlan0 (BCM AP6256) uploads/downloads via AP ch2, sniffer spark3 MT7925 (mt7925e) monitor HT20",
+ "date": "2026-11-26",
+ "pcap_sha256": "488217d653cb3fcfcb254d496ba5491a469f20f91602ab7ad69ec4192a158ccb",
+ "clock_offset_board_minus_sniffer_s": -0.5912,
+ "clock_offset_source": "in-band IPv6 UDP markers (payload 1000+7i B, MPDU = payload+98 B), median of first-transmission deltas",
+ "marker_deltas_s": [
+  0.5913,
+  0.59,
+  0.602,
+  0.5912,
+  0.5913,
+  0.5893,
+  0.5899,
+  0.5895,
+  0.59,
+  0.5894,
+  0.5946,
+  0.6046,
+  0.5909,
+  0.592,
+  0.5917,
+  0.5906,
+  0.5912,
+  0.5911,
+  0.5914
+ ],
+ "frames": 20206,
+ "uplink_data_frames": 6779,
+ "uploads": [
+  {
+   "payload_bytes": 114993,
+   "uplink_frames": 87,
+   "uplink_air_bytes": 125659,
+   "large_ratio": 0.9195,
+   "max_iat_s": 0.0099,
+   "uplink_span_s": 0.0465,
+   "retry_frac": 0.023
+  },
+  {
+   "payload_bytes": 114993,
+   "uplink_frames": 91,
+   "uplink_air_bytes": 128480,
+   "large_ratio": 0.8791,
+   "max_iat_s": 0.0066,
+   "uplink_span_s": 0.0479,
+   "retry_frac": 0.1099
+  },
+  {
+   "payload_bytes": 114993,
+   "uplink_frames": 89,
+   "uplink_air_bytes": 124459,
+   "large_ratio": 0.8876,
+   "max_iat_s": 0.0062,
+   "uplink_span_s": 0.0439,
+   "retry_frac": 0.0112
+  },
+  {
+   "payload_bytes": 114993,
+   "uplink_frames": 91,
+   "uplink_air_bytes": 126123,
+   "large_ratio": 0.8791,
+   "max_iat_s": 0.0067,
+   "uplink_span_s": 0.0494,
+   "retry_frac": 0.033
+  },
+  {
+   "payload_bytes": 114993,
+   "uplink_frames": 88,
+   "uplink_air_bytes": 125769,
+   "large_ratio": 0.9091,
+   "max_iat_s": 0.0099,
+   "uplink_span_s": 0.0512,
+   "retry_frac": 0.0114
+  },
+  {
+   "payload_bytes": 528833,
+   "uplink_frames": 344,
+   "uplink_air_bytes": 523729,
+   "large_ratio": 0.9797,
+   "max_iat_s": 0.0121,
+   "uplink_span_s": 0.1508,
+   "retry_frac": 0.093
+  },
+  {
+   "payload_bytes": 528833,
+   "uplink_frames": 320,
+   "uplink_air_bytes": 482694,
+   "large_ratio": 0.9688,
+   "max_iat_s": 0.0089,
+   "uplink_span_s": 0.1499,
+   "retry_frac": 0.175
+  },
+  {
+   "payload_bytes": 528833,
+   "uplink_frames": 400,
+   "uplink_air_bytes": 600449,
+   "large_ratio": 0.965,
+   "max_iat_s": 0.0082,
+   "uplink_span_s": 0.143,
+   "retry_frac": 0.1475
+  },
+  {
+   "payload_bytes": 528833,
+   "uplink_frames": 425,
+   "uplink_air_bytes": 646485,
+   "large_ratio": 0.9788,
+   "max_iat_s": 0.1098,
+   "uplink_span_s": 0.3079,
+   "retry_frac": 0.3176
+  },
+  {
+   "payload_bytes": 528833,
+   "uplink_frames": 403,
+   "uplink_air_bytes": 615179,
+   "large_ratio": 0.9826,
+   "max_iat_s": 0.0115,
+   "uplink_span_s": 0.1857,
+   "retry_frac": 0.2655
+  }
+ ],
+ "downloads": [
+  {
+   "payload_bytes": 2000000,
+   "uplink_frames": 824,
+   "uplink_air_bytes": 100697,
+   "large_ratio": 0.0,
+   "max_iat_s": 0.0318,
+   "uplink_span_s": 0.6601,
+   "retry_frac": 0.2306
+  },
+  {
+   "payload_bytes": 2000000,
+   "uplink_frames": 979,
+   "uplink_air_bytes": 119595,
+   "large_ratio": 0.0,
+   "max_iat_s": 0.0483,
+   "uplink_span_s": 0.4785,
+   "retry_frac": 0.1369
+  },
+  {
+   "payload_bytes": 2000000,
+   "uplink_frames": 756,
+   "uplink_air_bytes": 92317,
+   "large_ratio": 0.0,
+   "max_iat_s": 0.029,
+   "uplink_span_s": 0.5793,
+   "retry_frac": 0.1667
+  },
+  {
+   "payload_bytes": 2000000,
+   "uplink_frames": 673,
+   "uplink_air_bytes": 82407,
+   "large_ratio": 0.0,
+   "max_iat_s": 0.0294,
+   "uplink_span_s": 0.5602,
+   "retry_frac": 0.0386
+  },
+  {
+   "payload_bytes": 2000000,
+   "uplink_frames": 1105,
+   "uplink_air_bytes": 135015,
+   "large_ratio": 0.0,
+   "max_iat_s": 0.0441,
+   "uplink_span_s": 0.5203,
+   "retry_frac": 0.0462
+  }
+ ],
+ "detectors": {
+  "rule": {
+   "config": "configs/netsim_v1_derived.yaml (synthetic calibration, unchanged)",
+   "uploads_hit": 5,
+   "uploads": 10,
+   "hit_per_upload": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "events": 5,
+   "false_events": 0,
+   "false_event_scores": []
+  },
+  "window_model": {
+   "config": "configs/netsim_v1_derived.yaml (synthetic calibration, unchanged)",
+   "uploads_hit": 10,
+   "uploads": 10,
+   "hit_per_upload": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "events": 14,
+   "false_events": 4,
+   "false_event_scores": [
+    0.318,
+    0.921,
+    0.897,
+    0.34
+   ]
+  }
+ }
+}

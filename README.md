@@ -105,6 +105,9 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
 - monitor mode 실측(`docs/monitor_mode_test.md`): RTL8192EU + `rtl8xxxu`는 다른 기기의 **HT 데이터 프레임을 하나도 잡지 못했다**(legacy 속도 프레임만 잡힘).
   - 업로드 feature를 만들려면 동글을 바꿔야 한다. 후보는 `mt76x2u`/`mt7921u`/`ath9k_htc` 칩으로, 보드 커널에 드라이버가 이미 있다.
   - 계획했던 RTL8188FTV도 같은 드라이버라 같은 위험이 있다.
+- 실측 캡처(`docs/real_capture_spark3.md`): 연구실 머신 spark3의 내장 Wi-Fi(MT7925)로 실제 업로드 패킷을 잡았다.
+  - 합성 보정 그대로 적용한 결과: window model 10/10(오탐 4), rule 5/10(오탐 0).
+  - 실측 데이터로 다시 보정해야 한다.
 - 보드 측정(카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
 
 ## 한계

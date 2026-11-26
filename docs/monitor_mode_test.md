@@ -113,6 +113,7 @@ sudo rmmod rtl8xxxu && sudo insmod ./8192eu.ko      # 시험 후: sudo rmmod 819
 - 시험 후 원래 드라이버(`rtl8xxxu`)로 되돌렸다.
 
 ## 다음 단계
+0. **(2026-11-26 추가)** 연구실 머신 spark3의 MT7925로 HT 데이터 캡처에 성공했다(`docs/real_capture_spark3.md`). 오프라인 데모용 패킷은 이 방식으로 기록한다.
 1. **동글 교체 (권장)**: 보드 커널에 드라이버와 firmware가 이미 있는 칩을 쓴다. 산 뒤에는 이 문서의 시험을 그대로 반복해 HT 프레임이 잡히는지 확인한다.
    - MediaTek `mt76x2u`(MT7612U, `mt7662u.bin` 있음), `mt7921u`(MT7921AU, `WIFI_RAM_CODE_MT7961_1.bin` 있음)
    - Atheros `ath9k_htc`(AR9271, `htc_9271.fw` 있음)

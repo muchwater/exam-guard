@@ -64,7 +64,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--index", required=True)
     ap.add_argument("--split", default="eval")
-    ap.add_argument("--detector", choices=["rule", "window_model"])
+    ap.add_argument("--detector", choices=["rule", "count_rule", "window_model"])
     ap.add_argument("--config", action="append", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", type=int, default=8)

@@ -64,23 +64,23 @@
   "linux_browse_wan": {
    "sessions": 4,
    "uploads": 9,
-   "recall": 1.0,
-   "events": 9,
+   "recall": 0.8888888888888888,
+   "events": 8,
    "precision": 1.0,
    "false_per_hour": 0.0,
-   "event_dur_median_s": 2.0,
-   "event_dur_max_s": 3.0,
-   "onset_err_median_s": -0.4596285401821376
+   "event_dur_median_s": 1.0,
+   "event_dur_max_s": 2.0,
+   "onset_err_median_s": -0.45115292806464424
   },
   "ALL": {
    "sessions": 24,
    "uploads": 554,
-   "recall": 1.0,
-   "events": 554,
+   "recall": 0.9981949458483754,
+   "events": 553,
    "precision": 1.0,
    "false_per_hour": 0.0,
    "event_dur_median_s": 1.0,
-   "event_dur_max_s": 3.0,
+   "event_dur_max_s": 2.0000000000000018,
    "onset_err_median_s": 8.644042009109398e-05
   }
  },
@@ -1431,16 +1431,14 @@
    "run": 41,
    "preset": "linux_browse_wan",
    "n_gt": 2,
-   "n_hit": 2,
-   "n_events": 2,
+   "n_hit": 1,
+   "n_events": 1,
    "n_false": 0,
    "hours": 0.08358557611111112,
    "event_durations": [
-    2.0,
     1.0
    ],
    "onset_errors": [
-    -0.7760106492804937,
     -0.4426773159471509
    ]
   },
@@ -1487,9 +1485,9 @@
    "n_false": 0,
    "hours": 0.08344599277777778,
    "event_durations": [
-    2.0,
-    2.0,
-    3.0
+    1.0,
+    1.0,
+    2.0
    ],
    "onset_errors": [
     -0.23471883330564935,

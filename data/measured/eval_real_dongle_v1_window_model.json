@@ -1,0 +1,150 @@
+{
+ "index": "data/raw/real/index_dongle.jsonl",
+ "split": "eval",
+ "detector": "window_model",
+ "configs": [
+  "configs/real_dongle_v1_derived.yaml"
+ ],
+ "summary": {
+  "dongle_board": {
+   "sessions": 4,
+   "uploads": 28,
+   "recall": 0.9285714285714286,
+   "events": 38,
+   "precision": 0.6842105263157895,
+   "false_per_hour": 43.98103564244825,
+   "event_dur_median_s": 1.0,
+   "event_dur_max_s": 3.0,
+   "onset_err_median_s": -0.45911717414855957
+  },
+  "ALL": {
+   "sessions": 4,
+   "uploads": 28,
+   "recall": 0.9285714285714286,
+   "events": 38,
+   "precision": 0.6842105263157895,
+   "false_per_hour": 43.98103564244825,
+   "event_dur_median_s": 1.0,
+   "event_dur_max_s": 3.0,
+   "onset_err_median_s": -0.45911717414855957
+  }
+ },
+ "sessions": [
+  {
+   "run": "dongle_calib2/seg0",
+   "preset": "dongle_board",
+   "n_gt": 2,
+   "n_hit": 2,
+   "n_events": 2,
+   "n_false": 0,
+   "hours": 0.015195025801658631,
+   "event_durations": [
+    1.0,
+    1.0
+   ],
+   "onset_errors": [
+    -0.10905241966247559,
+    -0.49109768867492676
+   ]
+  },
+  {
+   "run": "dongle_calib2/seg1",
+   "preset": "dongle_board",
+   "n_gt": 7,
+   "n_hit": 7,
+   "n_events": 9,
+   "n_false": 2,
+   "hours": 0.0614301468928655,
+   "event_durations": [
+    1.0,
+    1.0,
+    1.0,
+    2.0,
+    1.0,
+    1.0,
+    1.0,
+    2.0,
+    1.0
+   ],
+   "onset_errors": [
+    0.007287025451660156,
+    -0.08452010154724121,
+    -0.27399230003356934,
+    -0.9621829986572266,
+    -0.7319388389587402,
+    -0.89225172996521,
+    -0.1881866455078125
+   ]
+  },
+  {
+   "run": "dongle_calib2/seg2",
+   "preset": "dongle_board",
+   "n_gt": 17,
+   "n_hit": 15,
+   "n_events": 24,
+   "n_false": 9,
+   "hours": 0.18270638393031227,
+   "event_durations": [
+    1.0,
+    1.0,
+    1.0,
+    3.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    2.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    2.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "onset_errors": [
+    0.023369550704956055,
+    -0.4529240131378174,
+    -0.6462283134460449,
+    -0.46531033515930176,
+    -0.6205496788024902,
+    -0.773357629776001,
+    -0.21269440650939941,
+    -0.6180906295776367,
+    -0.5982615947723389,
+    -0.04537773132324219,
+    -0.1355128288269043,
+    0.002331256866455078,
+    -0.5416707992553711,
+    -0.7576689720153809,
+    -0.3020055294036865
+   ]
+  },
+  {
+   "run": "dongle_calib2/seg3",
+   "preset": "dongle_board",
+   "n_gt": 2,
+   "n_hit": 2,
+   "n_events": 3,
+   "n_false": 1,
+   "hours": 0.013513314459058973,
+   "event_durations": [
+    3.0,
+    1.0,
+    2.0
+   ],
+   "onset_errors": [
+    -2.6682798862457275,
+    0.07558679580688477
+   ]
+  }
+ ]
+}

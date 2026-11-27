@@ -19,8 +19,9 @@ KAIST On-device AI 텀 프로젝트(Rubik Pi 3, QCS6490).
 ## 구조
 ```
 configs/    모든 수치 파라미터 (+ "# source:" 근거, 근거가 없으면 TBD)
-capture/    monitor mode 설정, live sniffer(tcpdump + BPF 우리 MAC 필터), pcap reader/writer, 캡처 실험 스크립트
-net_event/  feature(크기, IAT, burst), rule-based detector, 같은 interface의 window-model detector, 측정·학습
+capture/    monitor mode 설정, live sniffer(tcpdump + BPF 우리 MAC 필터), pcap reader/writer, 캡처 실험 스크립트,
+            BlockAck 순번으로 MPDU 수 복원(ba_recon: 데이터를 복호하지 못하는 동글용)
+net_event/  feature(크기, IAT, burst), rule-based detector, MPDU 수 기반 count rule, window-model detector, 측정·학습
 vision/     카메라·녹화(frame timestamp), pose(QNN HTP / ONNX CPU fallback), 좌석 매핑, 행동 인식
 fusion/     time-window fusion → alert, 반복 업로드에 걸친 좌석별 증거 누적(seat_evidence)
 synth/      측정 분포 기반 합성 pcap / keypoint 생성기
@@ -30,7 +31,8 @@ demo/       live 데모(자동 녹화) + 화면(영상 overlay, network timeline
 replay/     녹화된 pcap + 영상으로 전체 pipeline 재생(오프라인 데모)
 tools/      TBD 목록, 좌석 표시, 카메라 지연·시계 오차 측정, 연기 cue, RTT/HTTP·TLS 바이트 측정,
             ExamCheat pose 추출·통계, 대용 페이지 이미지, offline 데모 세션 생성(합성 또는 실측 패킷),
-            실측 캡처(spark3 monitor 스크립트, 보드 OTA 세션, 시계 표식→index), pose 양자화·NPU 비교
+            실측 캡처(spark3 monitor 스크립트, 보드 OTA 세션, 보드 동글 세션, 시계 표식→index), pose 양자화·NPU 비교
+drivers/    RTL8192EU vendor 드라이버 패치(monitor mode TSFT·LDPC 표시·CRC 오류 프레임)
 docs/       조사 결과, 정의 후보, 캡처·녹화 절차, 시간 동기화
 common/     공통 event 타입, config(TBD 검사), latency 기록
 ```
@@ -101,11 +103,13 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
   - 정상 좌석 오지목은 0.5% 이하다.
 - 네트워크: 합성 데이터(eval)에서 두 detector의 결과가 갈렸다.
   - 업로드 전용 기기: rule과 window model 모두 recall 1.0, 오탐 0.
-  - 브라우징 중 업로드: rule은 0/9이고 window model은 9/9.
+  - 브라우징 중 업로드: rule은 0/9이고 window model은 8/9.
+  - 2026-11-27: window model detector가 downlink feature를 0으로 넣던 버그(학습과 불일치)를 고친 뒤의 값이다. 고치기 전에는 9/9였다.
   - 합성 결과이므로 실제 성능의 상한으로 본다(`docs/netsim_model.md`).
-- monitor mode 실측(`docs/monitor_mode_test.md`): RTL8192EU + `rtl8xxxu`는 다른 기기의 **HT 데이터 프레임을 하나도 잡지 못했다**(legacy 속도 프레임만 잡힘).
-  - 업로드 feature를 만들려면 동글을 바꿔야 한다. 후보는 `mt76x2u`/`mt7921u`/`ath9k_htc` 칩으로, 보드 커널에 드라이버가 이미 있다.
-  - 계획했던 RTL8188FTV도 같은 드라이버라 같은 위험이 있다.
+- monitor mode 실측(`docs/monitor_mode_test.md`): 보드 동글(RTL8192EU)은 다른 기기의 HT 데이터를 복호하지 못한다.
+  - 원인은 LDPC다. 보드와 AP가 LDPC를 쓰는데 이 칩에는 LDPC 복호기가 없다. 칩 카운터와 패치한 드라이버(`drivers/`)로 확정했다.
+  - **대안: BlockAck 순번으로 MPDU 수를 복원한다(`capture/ba_recon.py`).** spark3 실측과 비교해 순번 개수가 거의 일치했다.
+  - 보드 혼자 녹화한 세션 2개로 세션 단위 교차평가를 했다(`count_rule`). 일반 업로드 46/48, 오탐 32분에 1건, 브라우징 중 업로드 0/8.
 - 실측 캡처(`docs/real_capture_spark3.md`): 연구실 머신 spark3의 내장 Wi-Fi(MT7925)로 실제 업로드 패킷을 잡았다.
   - 합성 보정 그대로 적용한 결과: window model 10/10(오탐 4), rule 5/10(오탐 0).
   - 실측 데이터로 다시 보정해야 한다. 녹화 절차는 `docs/real_capture_runbook.md`에 있다(사용자는 spark3 sudo 1회).

@@ -58,3 +58,39 @@ def test_logistic_fit_separates():
     y = np.r_[np.zeros(50), np.ones(50)]
     m = LogisticModel.fit(X, y, l2=1.0)
     assert ((m.predict_proba(X) >= 0.5) == y).mean() > 0.95
+
+
+def test_window_model_sees_downlink_like_training():
+    """The detector's feature vectors must equal train.session_xy's (multi_window_features over all frames)."""
+    from net_event.features import multi_window_features
+    windows = [1.0, 2.0]
+    names = feature_names(windows)
+    seen = []
+
+    class Spy:
+        features = names
+
+        def predict_proba(self, X):
+            seen.append(X[0].copy())
+            return np.zeros(len(X))
+
+    det = WindowModelDetector(Spy(), windows, step_s=0.5, large_frame_bytes=1400, threshold=0.5)
+    ps = trace()
+    det.run(ps)
+    t1 = ps[0].ts + 0.5 * 21                     # 21st evaluation time: its 1 s window covers the first burst
+    ref = multi_window_features([p for p in ps if p.ts < t1], DEV, t1, windows, 1400)
+    got = seen[20]
+    assert got[names.index("down_frames@1s")] > 0
+    np.testing.assert_allclose(got, ref, rtol=1e-6)
+
+
+def test_count_rule_needs_uplink_dominance():
+    from net_event.detector import CountRuleDetector
+    up = [pkt(10 + i * 0.002, 26) for i in range(200)]                          # 200 up, 100 down: upload-like
+    up += [pkt(10 + i * 0.004 + 0.001, 26, uplink=False) for i in range(100)]
+    dl = [pkt(20 + i * 0.002, 26, uplink=False) for i in range(400)]             # 400 down, 200 up: download-like
+    dl += [pkt(20 + i * 0.004 + 0.001, 26) for i in range(200)]
+    ps = sorted(up + dl, key=lambda p: p.ts)
+    evs = CountRuleDetector(burst_gap_s=0.5, min_up_mpdus=100, min_up_share=0.55).run(ps)
+    assert len(evs) == 1 and round(evs[0].t_start) == 10
+    assert evs[0].features["n_up"] == 200 and evs[0].features["n_down"] == 100

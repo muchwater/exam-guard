@@ -1,10 +1,48 @@
 # Monitor mode 실측: RTL8192EU + rtl8xxxu (2026-11-26, Rubik Pi 3)
 
-## 결론
-- 이 동글은 monitor mode에서 **다른 기기 사이의 HT(802.11n MCS) 프레임을 하나도 잡지 못했다**. legacy 속도(11b 1 Mb/s, 11g 24 Mb/s)로 보낸 프레임만 잡혔다.
-- 이미지 업로드는 대부분 HT 데이터 프레임이다. 그래서 이 동글로는 packet 크기·간격 feature를 만들 수 없다.
-- 칩 자체는 HT를 받는다. 동글을 AP에 연결하면 자기에게 오는 MCS 2 프레임을 정상 수신했다.
-- 계획했던 RTL8188FTV도 같은 `rtl8xxxu` 드라이버를 쓴다. 따라서 같은 문제가 날 위험이 있다(미시험).
+## 결론 (2026-11-27 갱신)
+- 이 동글은 monitor mode에서 **다른 기기 사이의 HT(802.11n MCS) 데이터 프레임을 하나도 host로 넘기지 못한다**. legacy 속도(11b 1 Mb/s, 11g 24 Mb/s)로 보낸 프레임만 잡힌다.
+- **원인은 LDPC다** (아래 "원인 규명").
+  - 보드와 AP가 둘 다 HT Capabilities에 LDPC를 광고하므로, 둘 사이의 HT 데이터는 LDPC로 부호화된다.
+  - RTL8192E에는 LDPC 복호기가 없다.
+  - 칩은 HT-SIG까지는 읽지만 데이터 CRC가 모두 실패한다. 칩 카운터로 확인했다: 업로드 중 HT CRC 오류 134건/s, HT 정상 0건.
+- 동글에게 직접 온 HT 프레임은 받았다. AP가 LDPC를 못 받는 동글에게는 BCC로 보내기 때문이다.
+- 데이터 내용은 어떤 드라이버로도 받을 수 없다. 복호기가 하드웨어에 없기 때문이다.
+- **대신 같은 동글로 업로드를 잡는 방법을 찾았다 (대안 3).**
+  - 데이터마다 돌아오는 BlockAck는 legacy 속도라 잡힌다. BlockAck의 순번(SSN + bitmap)으로 기기가 보내고 받은 MPDU 수를 정확히 복원한다.
+  - 코드: `capture/ba_recon.py`
+- 계획했던 RTL8188FTV도 LDPC가 없는 칩이다(미시험). 연결 상대가 LDPC를 쓰면 같은 문제가 난다.
+
+## 원인 규명 (2026-11-27)
+### 1. 칩 카운터: HT 프레임은 도착하지만 CRC가 모두 실패한다
+- vendor 드라이버(`8192eu`)의 `/proc/net/rtl8192eu/<if>/read_reg`·`write_reg`로 수신 카운터를 0.2 s마다 읽었다.
+  - PHY 카운터: BB `0xF90`(HT CRC 정상/오류), `0xF94`(legacy OFDM).
+  - MAC 카운터: `0x664` RXERR_RPT(종류 선택 후 읽기).
+  - 레지스터 위치는 vendor 드라이버 `hal/hal_com.c`의 `rtw_dump_phy_rx_counters`·`rtw_dump_mac_rx_counters`(N 계열)를 따랐다.
+- 시험 내용: 보드가 15 s 쉬고, UXGA JPEG(499,952 B)를 6회 연속 업로드하고, 15 s 쉬고, 2 MB를 3회 다운로드했다. 경로는 대안 1과 같은 무선 경로다.
+- 카운터는 채널의 모든 기기를 센다. 프레임 내용은 저장하지 않았다.
+
+| 구간 | 길이 | PHY HT 정상 | PHY HT CRC 오류 | MAC HT 정상 | MAC HT 오류 | PHY legacy OFDM 정상 |
+|---|---|---|---|---|---|---|
+| 유휴 | 39.8 s | 0.0/s | 0.5/s | 0.2/s | 0.5/s | 73.6/s |
+| 업로드 | 1.3 s | **0.0/s** | **134.3/s** | 0.0/s | 141.8/s | 574.1/s |
+| 다운로드 | 3.1 s | **0.0/s** | **97.4/s** | 0.0/s | 100.3/s | 321.9/s |
+
+- HT 프레임은 칩에 도착하고, HT-SIG를 읽은 뒤 데이터에서 실패한다. 필터 문제가 아니라 **복호 실패**다.
+- 데이터: `data/raw/rtk_exp/base/` (보드, git 제외).
+
+### 2. 왜 복호에 실패하나: LDPC
+| 기기 | HT Capabilities | LDPC | RX STBC | 출처 |
+|---|---|---|---|---|
+| 보드 wlan0 (AP6256) | `0x0121` | **1** | 1 | 보드가 보낸 probe request (spark3·동글 캡처) |
+| AP | `0x19ef` | **1** | 1 (TX STBC 1) | AP의 probe response |
+| RTL8192EU | – | **없음** | 없음 | vendor `hal/rtl8192e/rtl8192e_hal_init.c`: `HAL_DEF_RX_LDPC` = FALSE, `iw phy` |
+
+- 송신 측은 상대가 LDPC를 받을 수 있으면 LDPC로 보낼 수 있다. 보드와 AP는 서로 LDPC를 받는다.
+- spark3(MT7925) 캡처에서 AP→보드 프레임은 STBC로 표시됐다. 이 radiotap은 FEC 종류를 표시하지 않는다.
+- 앞서 `iw phy phy0 info`는 보드에 LDPC가 "없다"고 보여 줬다. 그러나 brcmfmac은 FullMAC이라 연결 IE를 firmware가 직접 만든다. 실제로 보낸 probe request에는 LDPC가 켜져 있었다.
+- 동글이 AP에 연결됐을 때 자기에게 온 MCS 2·MCS 10 프레임은 받았다. AP는 LDPC를 못 받는 상대에게 BCC로 보낸다.
+- 확인할 것(TBD): 드라이버 패치(`drivers/rtl8192eu_monitor_meta.patch`)로 RX descriptor의 LDPC 비트를 radiotap에 실어 직접 확인한다.
 
 ## 환경
 | 항목 | 값 | 출처 |
@@ -112,12 +150,122 @@ sudo rmmod rtl8xxxu && sudo insmod ./8192eu.ko      # 시험 후: sudo rmmod 819
 - 그런데도 칩은 다른 기기 사이의 HT 데이터(A-MPDU)를 host로 넘기지 않는다. **RTL8192EU로는 HT 데이터 캡처가 불가능**하다고 판단한다.
 - 시험 후 원래 드라이버(`rtl8xxxu`)로 되돌렸다.
 
+## 대안 3: BlockAck 순번으로 MPDU 수 복원 (같은 동글, 2026-11-27) → 채택
+### 원리
+- A-MPDU를 받은 쪽은 곧바로 BlockAck(BA)를 보낸다. BA는 legacy 속도(24 Mb/s)라 이 동글도 받는다.
+- compressed BA에는 받는 쪽의 수신 기록이 들어 있다: 시작 순번(SSN)과 64-bit bitmap. bit i는 순번 SSN+i인 MPDU를 받았다는 뜻이다(IEEE 802.11-2016 9.3.1.9.3).
+- 송신 기기는 TID마다 QoS 데이터 MPDU에 순번을 하나씩 늘려 붙인다. 그래서 두 BA 사이에 "확인된 최대 순번"이 늘어난 양이 그동안 보낸 새 MPDU 수다.
+  - 중간의 BA를 놓쳐도 다음 BA에서 누적값이 맞는다. 단, 그 사이에 2048개(순번 공간의 절반)보다 적게 지나가야 한다.
+- 방향:
+  - RA = 팀 기기인 BA → 기기가 **보낸**(uplink) MPDU
+  - TA = 팀 기기인 BA → 기기가 **받은**(downlink) MPDU
+- 얻는 것은 MPDU **수와 시각**이다. MPDU **크기**는 알 수 없다.
+- `capture/ba_recon.py`가 새 MPDU마다 가짜 QoS 데이터 프레임(헤더만, 크기 정보 없음)을 만든다. 이 프레임은 앞 A-MPDU 구간(최대 aPPDUMaxTime 5.484 ms)에 고르게 놓인다.
+  - 원래 프레임도 그대로 남긴다. 그래서 기존 도구(`tools.real_session`, `net_event.*`, `replay`)가 그대로 동작한다.
+
+### 검증: spark3 캡처 (데이터도 복호됨, 같은 캡처 안의 BA와 비교)
+| 활동 | 횟수 | 실제 uplink MPDU(고유 순번) | BA 복원 uplink | 실제 downlink | BA 복원 downlink |
+|---|---|---|---|---|---|
+| 업로드 115 KB | 5 | 86–88 | 86–88 | 50–58 | 50–58 |
+| 업로드 529 KB | 5 | 303–372 | **376–378** | 139–172 | 157–172 |
+| 다운로드 2 MB | 5 | 634–1053 | 643–1053 | 1362–1404 | **1405–1409** |
+
+- 차이가 난 곳은 spark3가 데이터 프레임을 놓친 경우다. BA 복원값이 더 일정하고 크기와 맞는다: 529 KB ÷ 1428 B(MSS) ≈ 370.
+- 업로드 중 uplink MPDU의 실제 크기 중앙값은 1546 B, 다운로드 중(TCP ACK)은 118 B였다.
+
+### 크기 추정은 실패: Broadcom frameburst
+- RTS의 NAV로 MPDU 크기를 추정해 보았다. NAV에서 응답 시간을 뺀 데이터 시간을 MPDU 수로 나누는 방식이다. 실제 크기와 상관계수가 0.16에 그쳤다.
+- 원인: 보드는 RTS/CTS 한 번 뒤에 A-MPDU를 여러 개 연달아 보낸다. 예: 13개 → BA → 30개 → BA.
+  - RTS의 NAV는 첫 A-MPDU만 덮는다.
+  - spark3 TSFT로 확인했다.
+- vendor 드라이버의 radiotap에는 TSFT가 없다. host 시각은 USB 지연이 섞여 µs 단위 간격을 잴 수 없다.
+
+### 실측: 보드 동글로 보정 세션 녹화 (`dongle_calib1`, seed 1)
+- 보드 혼자 수행했다: 동글(vendor 드라이버) 캡처와 `tools/ota_session.py --plan calib`을 동시에 돌렸다.
+  - 업로더와 sniffer가 같은 보드 시계를 쓰므로 시계 차이는 0이다(`tools.real_session --offset 0`).
+  - 캡처 21,576 프레임, kernel drop 0
+  - 복원 결과: uplink 49,489 MPDU, downlink 118,328 MPDU
+
+| 활동 | 횟수 | uplink MPDU | downlink MPDU | uplink 비율 |
+|---|---|---|---|---|
+| 업로드 640x480 (122 KB) | 4 | 90–95 | 48–64 | 0.59–0.65 |
+| 업로드 800x600 (183 KB) | 4 | 134–138 | 71–78 | 0.64–0.66 |
+| 업로드 1600x1200 (500 KB) | 4 | 356–361 | 135–167 | 0.68–0.73 |
+| 웹 페이지 로드 (Web Almanac p10–p90) | 48 | 211–2548 | 345–6340 | **0.23–0.38** |
+| 큰 ping (1400 B, 0.5 s, 20 s) | 4 | 40–43 | 39–61 | 0.41–0.51 |
+| 브라우징 중 업로드 | 4 | 645–1581 | 1410–2790 | **0.30–0.36** |
+
+- 업로드의 uplink MPDU 수는 크기에 비례한다(약 1400 B당 1개).
+- TCP는 데이터 두 개마다 ACK 하나를 보낸다. 그래서 업로드는 uplink가 많고(비율 0.59 이상), 다운로드는 downlink가 많다(0.38 이하).
+- 브라우징 중 업로드는 페이지의 downlink에 묻혀 비율이 다운로드와 겹친다.
+  - RTS NAV 최대값도 페이지 로드(270–5142 µs)와 겹쳐 구분하지 못한다.
+
+### count rule detector
+- `net_event.detector.CountRuleDetector`, 이름 `count_rule`. 크기 없이 수만 쓴다.
+- 판정: uplink burst 안에서 uplink MPDU 수가 `min_up_mpdus` 이상이고, uplink 비율 n_up / (n_up + n_down)이 `min_up_share` 이상이면 업로드 event다.
+- 보정 규칙(`net_event.calibrate`):
+  - `min_up_mpdus`: 보정 업로드를 모두 지키는 최소값
+  - `min_up_share`: 후보 burst에서 F1이 최대가 되는 값
+
+### 평가: 세션 단위 교차 (보정 세션 ≠ 평가 세션)
+- 같은 계획(`--plan calib`)으로 seed만 바꿔 세션을 두 번 녹화했다: `dongle_calib1`(seed 1), `dongle_calib2`(seed 2).
+- 세션마다 업로드는 28회다. 해상도 6종 × 4회에 브라우징 중 업로드 4회가 더해진다.
+- 한쪽 세션으로 보정하고 다른 쪽 세션으로 평가했다. 방향을 바꿔 두 번 했다.
+- 결과 파일:
+  - 세션 1 → 2: `data/measured/eval_real_dongle_v1_*.json`, `configs/real_dongle_v1_derived.yaml`
+  - 세션 2 → 1: 같은 명령에 split만 바꿨다.
+
+| 보정 → 평가 | detector | 일반 업로드 | 브라우징 중 업로드 | 오탐 | 보정값 |
+|---|---|---|---|---|---|
+| 1 → 2 | **count_rule** | **24/24** | 0/4 | **0** | MPDU ≥ 90, 비율 ≥ 0.592 |
+| 2 → 1 | **count_rule** | 22/24 (VGA 2회 놓침) | 0/4 | 1 (약 3.7/h) | MPDU ≥ 83, 비율 ≥ 0.626 |
+| 1 → 2 | window_model | recall 0.929 (전체 28회) | | 44/h | |
+| 2 → 1 | window_model | recall 0.786 (전체 28회) | | 33/h | |
+
+- **count rule이 일반 업로드를 46/48 잡았고 오탐은 32분에 1건이었다.**
+  - 이 오탐은 페이지 로드 중 downlink BA를 놓친 구간이다. uplink 84 MPDU, downlink 0으로 집계됐다.
+  - 놓친 2회는 가장 작은 VGA(122 KB) 업로드다. 그 세션의 VGA 비율이 0.59–0.65여서 0.626 아래로 내려갔다.
+- **브라우징 중 업로드(0/8)는 수만으로는 구분할 수 없다.** 크기 정보가 필요하다(다음 단계 2).
+- window model은 페이지 로드에서 오탐이 많았다. 수만 들어간 가짜 프레임에서는 크기 feature가 의미가 없기 때문이다.
+- rule detector(크기 기반)는 이 스트림에 쓰지 않는다. 가짜 프레임의 크기가 모두 같아서다.
+
+## 드라이버 패치: 동글이 LDPC를 직접 보고 (2026-11-27)
+- `drivers/rtl8192eu_monitor_meta.patch`: vendor 드라이버(Mange/rtl8192eu-linux-driver c629cc9)에 7줄을 더했다.
+  - radiotap TSFT: RX descriptor의 TSFL
+  - monitor mode에서 CRC 오류 프레임을 버리지 않음
+  - radiotap MCS 필드에 FEC(LDPC) 표시
+- 보드에서 빌드했다: `~/drivers/rtl8192eu-eg`, `make CONFIG_PLATFORM_I386_PC=n CONFIG_PLATFORM_ARM_AARCH64=y`.
+- 시험: `REG_RCR`에 ACRC32를 켜고(`0x9000382f → 0x9000392f`), 위 counter 시험과 같은 트래픽을 보냈다.
+  - 개인정보: CRC 오류 프레임은 바로 뒤의 정상 프레임이 팀 기기의 BlockAck일 때만(6 ms 이내) 메타데이터를 남겼다. 나머지는 개수만 셌다.
+
+| 귀속 | 수 | MCS | LDPC | SGI | STBC |
+|---|---|---|---|---|---|
+| 보드 → AP (uplink) | 4 | 7, 4 | **1** | 1 | 0 |
+| AP → 보드 (downlink) | 2 | 6 | **1** | 1 | 1 |
+
+- **원인 확정:** 동글이 HT-SIG에서 읽은 LDPC 비트가 1이었다. 보드와 AP 사이의 HT 데이터는 LDPC다.
+- **PPDU별 크기는 얻을 수 없다.**
+  - CRC 오류 프레임 6,556개가 올라왔지만 HT는 11개뿐이었다. 업로드 중 HT PPDU는 초당 약 130개다.
+  - 칩은 대부분의 LDPC PPDU를 host로 넘기지 않는다. 넘긴 경우에도 길이가 1.9–8.1 KB로 PPDU 전체(약 5 ms × 72 Mb/s ≈ 44 KB)보다 훨씬 짧았다.
+- **TSFT는 쓸 수 있다:** 모든 프레임에 붙었고 단조 증가했다. host 시각과의 차이는 중앙값 169 µs로, USB 지연이다.
+  - 같은 TXOP 안 제어 프레임 사이 간격(CTS→BA, BA→BA)에서 A-MPDU의 공중 시간을 구할 수 있다.
+  - 이를 BA의 새 MPDU 수로 나누면, MPDU당 공중 시간 중앙값이 업로드 179 µs, 페이지 로드 32 µs였다(`data/raw/rtk_exp/probe1`).
+  - 179 µs는 1546 B를 MCS7 SGI로 보낸 시간(약 171 µs)과 맞는다.
+- 결과 파일: `data/measured/rtl8192eu_ldpc_diagnosis.json`
+
 ## 다음 단계
-0. **(2026-11-26 추가)** 연구실 머신 spark3의 MT7925로 HT 데이터 캡처에 성공했다(`docs/real_capture_spark3.md`). 오프라인 데모용 패킷은 이 방식으로 기록한다.
-1. **동글 교체 (권장)**: 보드 커널에 드라이버와 firmware가 이미 있는 칩을 쓴다. 산 뒤에는 이 문서의 시험을 그대로 반복해 HT 프레임이 잡히는지 확인한다.
-   - MediaTek `mt76x2u`(MT7612U, `mt7662u.bin` 있음), `mt7921u`(MT7921AU, `WIFI_RAM_CODE_MT7961_1.bin` 있음)
-   - Atheros `ath9k_htc`(AR9271, `htc_9271.fw` 있음)
-2. 대안 1(RTS NAV)은 새 동글이 오기 전까지, 또는 새 동글도 실패할 때를 위한 보조 수단으로 남긴다.
+1. **데모 네트워크 경로를 보드 동글로 바꿀 수 있다:** 동글 캡처 → `capture.ba_recon` → `count_rule`.
+   - 녹화 절차: `docs/real_capture_runbook.md`의 "보드 동글만으로 녹화하는 경로"
+   - spark3는 크기까지 필요할 때만 쓴다.
+2. **브라우징 중 업로드:** 패치 드라이버의 TSFT로 MPDU당 공중 시간을 구하면 데이터 MPDU(약 180 µs)와 ACK MPDU(약 30 µs)를 나눌 수 있다.
+   - 할 일: 패치 드라이버로 보정 세션을 다시 녹화하고, `ba_recon`이 이 값을 가짜 프레임 크기에 반영하게 한다.
+3. **일반화 조건 (TBD):**
+   - 상대 AP가 BlockAck를 legacy 속도로 보내야 한다. 이 AP는 24 Mb/s였다.
+   - 기기가 A-MPDU를 써야 한다(BA 합의).
+   - 다른 AP와 휴대폰에서 확인이 필요하다.
+4. **동글 교체가 필요하다면** LDPC를 받는 칩이어야 한다: MT7612U(`mt76x2u`), MT7921AU(`mt7921u`).
+   - AR9271(`ath9k_htc`)은 LDPC가 없어 같은 문제가 난다. 앞선 권장에서 뺐다.
+
 
 ## 재현
 ```bash

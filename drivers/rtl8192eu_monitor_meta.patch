@@ -1,0 +1,47 @@
+exam-guard patch for Mange/rtl8192eu-linux-driver (commit c629cc9, 2026-09-06): monitor-mode metadata for the PPDUs
+the RTL8192E cannot decode (LDPC; see docs/monitor_mode_test.md). Apply in the driver tree: git apply <this file>
+  1. radiotap TSFT from the RX descriptor (DW5 TSFL: parsed by GET_RX_STATUS_DESC_TSFL_92E but never stored)
+  2. monitor mode keeps CRC-error frames (rtw_recv.c already sets radiotap Flags BADFCS for them); the MAC passes
+     them up only when REG_RCR (0x608) bit 8 ACRC32 is set, e.g. via /proc/net/rtl8192eu/<if>/write_reg
+  3. radiotap MCS field reports the FEC type (LDPC bit of the RX descriptor)
+
+diff --git a/core/rtw_recv.c b/core/rtw_recv.c
+index ff6dd71..0d41469 100644
+--- a/core/rtw_recv.c
++++ b/core/rtw_recv.c
+@@ -4113,6 +4113,10 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe,
+ 		hdr_buf[rt_len] |= BIT5;
+ 		hdr_buf[rt_len + 1] |= (pattrib->stbc & 0x03) << 5;
+ 
++		/* FEC type: LDPC */
++		hdr_buf[rt_len] |= BIT4;
++		hdr_buf[rt_len + 1] |= (pattrib->ldpc & 0x01) << 4;
++
+ 		rt_len += 2;
+ 
+ 		/* MCS rate index */
+diff --git a/hal/rtl8192e/rtl8192e_rxdesc.c b/hal/rtl8192e/rtl8192e_rxdesc.c
+index 0a435a8..7ff8a71 100644
+--- a/hal/rtl8192e/rtl8192e_rxdesc.c
++++ b/hal/rtl8192e/rtl8192e_rxdesc.c
+@@ -58,5 +58,6 @@ void rtl8192e_query_rx_desc_status(union recv_frame *precvframe, u8 *pdesc)
+ 	pattrib->bw = (u8)GET_RX_STATUS_DESC_BW_92E(pdesc);
+ 	
+ 	/* Offset 20 */
++	pattrib->tsfl = (u32)GET_RX_STATUS_DESC_TSFL_92E(pdesc);
+ 
+ }
+diff --git a/hal/rtl8192e/usb/usb_ops_linux.c b/hal/rtl8192e/usb/usb_ops_linux.c
+index d3c32ea..d6c6b44 100644
+--- a/hal/rtl8192e/usb/usb_ops_linux.c
++++ b/hal/rtl8192e/usb/usb_ops_linux.c
+@@ -160,7 +160,8 @@ int recvbuf2recvframe(PADAPTER padapter, void *ptr)
+ 
+ 		pattrib = &precvframe->u.hdr.attrib;
+ 
+-		if ((padapter->registrypriv.mp_mode == 0) && ((pattrib->crc_err) || (pattrib->icv_err))) {
++		if ((padapter->registrypriv.mp_mode == 0) && !MLME_IS_MONITOR(padapter) &&
++		    ((pattrib->crc_err) || (pattrib->icv_err))) {
+ 			RTW_INFO("%s: RX Warning! crc_err=%d icv_err=%d, skip!\n", __FUNCTION__, pattrib->crc_err, pattrib->icv_err);
+ 
+ 			rtw_free_recvframe(precvframe, pfree_recv_queue);

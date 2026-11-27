@@ -1,0 +1,364 @@
+{
+ "index": "data/raw/real/index_dongle.jsonl",
+ "split": "calib",
+ "rule_presets": [
+  "dongle_board"
+ ],
+ "rule_runs": [
+  "dongle_calib1/seg0",
+  "dongle_calib1/seg1",
+  "dongle_calib1/seg2",
+  "dongle_calib1/seg3"
+ ],
+ "all_runs": [
+  "dongle_calib1/seg0",
+  "dongle_calib1/seg1",
+  "dongle_calib1/seg2",
+  "dongle_calib1/seg3"
+ ],
+ "rule": {
+  "large_frame_bytes": 26,
+  "burst_gap_s": 0.1055610179901123,
+  "min_burst_bytes": 2338,
+  "min_large_ratio": 0.9468085106382979,
+  "n_large_min": 89,
+  "n_small_max": 5,
+  "min_gap_between_uploads_s": 13.507518768310547,
+  "gap_separates_uploads": true
+ },
+ "count_rule": {
+  "burst_gap_s": 0.1055610179901123,
+  "min_up_mpdus": 90,
+  "min_up_share": 0.5923566878980892,
+  "calib_at_threshold": {
+   "precision": 1.0,
+   "recall": 0.8571428571428571,
+   "f1": 0.923076923076923
+  },
+  "n_bursts": 352,
+  "n_candidates": 36,
+  "n_uploads": 28,
+  "min_share_carrying": 0.25586863977295765,
+  "max_share_negative": 0.4527972027972028
+ },
+ "per_run": [
+  {
+   "run": "dongle_calib1/seg0",
+   "median_size_in_upload": 26.0,
+   "max_iat_in_upload": 0.07394886016845703,
+   "min_gap_between_uploads": 13.847089767456055,
+   "n_uploads": 8
+  },
+  {
+   "run": "dongle_calib1/seg1",
+   "median_size_in_upload": 26.0,
+   "max_iat_in_upload": 0.033241987228393555,
+   "min_gap_between_uploads": null,
+   "n_uploads": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "median_size_in_upload": 26.0,
+   "max_iat_in_upload": 0.049160003662109375,
+   "min_gap_between_uploads": 13.507518768310547,
+   "n_uploads": 9
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "median_size_in_upload": 26.0,
+   "max_iat_in_upload": 0.1055610179901123,
+   "min_gap_between_uploads": 15.382223129272461,
+   "n_uploads": 10
+  }
+ ],
+ "per_upload_burst": [
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 0,
+   "bytes": 2418,
+   "large_ratio": 1.0,
+   "n_large": 93,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 1,
+   "bytes": 9280,
+   "large_ratio": 0.9971988795518207,
+   "n_large": 356,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 2,
+   "bytes": 3484,
+   "large_ratio": 1.0,
+   "n_large": 134,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 3,
+   "bytes": 7330,
+   "large_ratio": 0.9964539007092199,
+   "n_large": 281,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 4,
+   "bytes": 7278,
+   "large_ratio": 0.9964285714285714,
+   "n_large": 279,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 5,
+   "bytes": 9334,
+   "large_ratio": 1.0,
+   "n_large": 359,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 6,
+   "bytes": 9256,
+   "large_ratio": 1.0,
+   "n_large": 356,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg0",
+   "seq": 7,
+   "bytes": 5432,
+   "large_ratio": 0.9952153110047847,
+   "n_large": 208,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg1",
+   "seq": 8,
+   "bytes": 9384,
+   "large_ratio": 0.997229916897507,
+   "n_large": 360,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 9,
+   "bytes": 5250,
+   "large_ratio": 0.995049504950495,
+   "n_large": 201,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 10,
+   "bytes": 2462,
+   "large_ratio": 0.9578947368421052,
+   "n_large": 91,
+   "n_small": 4,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 11,
+   "bytes": 5432,
+   "large_ratio": 0.9952153110047847,
+   "n_large": 208,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 12,
+   "bytes": 5224,
+   "large_ratio": 0.9950248756218906,
+   "n_large": 200,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 13,
+   "bytes": 2338,
+   "large_ratio": 0.9888888888888889,
+   "n_large": 89,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 14,
+   "bytes": 3586,
+   "large_ratio": 0.9927536231884058,
+   "n_large": 137,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 15,
+   "bytes": 3508,
+   "large_ratio": 0.9925925925925926,
+   "n_large": 134,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 16,
+   "bytes": 5250,
+   "large_ratio": 0.995049504950495,
+   "n_large": 201,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg2",
+   "seq": 17,
+   "bytes": 2416,
+   "large_ratio": 0.989247311827957,
+   "n_large": 92,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 18,
+   "bytes": 3770,
+   "large_ratio": 1.0,
+   "n_large": 145,
+   "n_small": 0,
+   "n_bursts_overlapping": 2
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 19,
+   "bytes": 5432,
+   "large_ratio": 0.9952153110047847,
+   "n_large": 208,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 20,
+   "bytes": 7330,
+   "large_ratio": 0.9964539007092199,
+   "n_large": 281,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 21,
+   "bytes": 5380,
+   "large_ratio": 0.9951690821256038,
+   "n_large": 206,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 22,
+   "bytes": 3562,
+   "large_ratio": 1.0,
+   "n_large": 137,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 23,
+   "bytes": 7358,
+   "large_ratio": 1.0,
+   "n_large": 283,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 24,
+   "bytes": 194504,
+   "large_ratio": 0.9998663280310119,
+   "n_large": 7480,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 25,
+   "bytes": 163330,
+   "large_ratio": 0.9998408150270615,
+   "n_large": 6281,
+   "n_small": 1,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 26,
+   "bytes": 228920,
+   "large_ratio": 0.9994321408290744,
+   "n_large": 8800,
+   "n_small": 5,
+   "n_bursts_overlapping": 1
+  },
+  {
+   "run": "dongle_calib1/seg3",
+   "seq": 27,
+   "bytes": 164086,
+   "large_ratio": 1.0,
+   "n_large": 6311,
+   "n_small": 0,
+   "n_bursts_overlapping": 1
+  }
+ ],
+ "window_model": {
+  "step_s": 1.0,
+  "l2_grid": [
+   0.0001,
+   0.001,
+   0.01,
+   0.1,
+   1.0,
+   10.0,
+   100.0,
+   1000.0,
+   10000.0
+  ],
+  "loso_mean_loglik": {
+   "0.0001": -0.8497344775851979,
+   "0.001": -0.17927955914047675,
+   "0.01": -0.12482919124735,
+   "0.1": -0.09243996683207172,
+   "1.0": -0.06081841242102208,
+   "10.0": -0.06171165365748164,
+   "100.0": -0.0860865606636156,
+   "1000.0": -0.1174973765517267,
+   "10000.0": -0.1344049371602579
+  },
+  "l2": 1.0,
+  "threshold": 0.2102355348935689,
+  "threshold_criterion": "max F1 on pooled LOSO",
+  "loso_at_threshold": {
+   "precision": 0.7027027027027027,
+   "recall": 0.896551724137931,
+   "f1": 0.787878787878788
+  },
+  "n_eval_points": 943,
+  "n_pos": 29,
+  "model": "data/models/net_logreg_dongle_v1.npz"
+ }
+}

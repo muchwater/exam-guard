@@ -13,6 +13,11 @@ Every value is computed by a stated rule from the data (no hand-picked numbers):
     min_large_ratio   = worst case over those bursts: min #large frames / (min #large + max #small frames)
                         (the small frames of an upload are handshake/ACK/FIN frames whose count varies with
                         timer phase; combining the extremes keeps every calibration upload and similar ones)
+  count rule (frame counts only; for BlockAck-reconstructed streams, capture/ba_recon.py), on all runs of the split:
+    burst_gap_s       = the rule detector's burst_gap_s
+    min_up_mpdus      = min uplink MPDUs of the burst carrying each upload (keeps every calibration upload)
+    min_up_share      = up_share cut that maximizes F1 over all bursts with >= min_up_mpdus uplink MPDUs
+                        (positive = burst overlapping an upload)
   window model:
     step_s            = min(windows_s): with evaluations every shortest window, every upload overlaps
                         the shortest window of some evaluation
@@ -33,9 +38,9 @@ import yaml
 from capture.macfilter import MacAllowlist
 from capture.pcap_io import read_pcap
 from common.config import load_config
-from net_event.detector import LogisticModel
+from net_event.detector import CountRuleDetector, LogisticModel
 from net_event.features import BurstSegmenter, feature_names, is_uplink_data
-from net_event.labels import load_intervals
+from net_event.labels import load_intervals, overlaps
 from net_event.train import session_xy
 
 L2_GRID = [1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0, 1e3, 1e4]   # log-spaced candidates (choice, reported)
@@ -90,6 +95,36 @@ def burst_stats(run: dict, gap: float, large: int) -> list[dict]:
                     "large_ratio": b.large_ratio(large), "n_large": n_large, "n_small": b.n_frames - n_large,
                     "n_bursts_overlapping": len(cand)})
     return out
+
+
+def count_bursts(run: dict, gap: float) -> list[dict]:
+    """Every uplink burst of the run with its MPDU counts (CountRuleDetector without thresholds)."""
+    dev = run["device"].lower()
+    pkts = sorted(read_pcap(run["pcap"], MacAllowlist([dev])), key=lambda p: p.ts)
+    gt = load_intervals(run["labels"])
+    out = []
+    for e in CountRuleDetector(gap, 0, 0.0).run(pkts):
+        hit = [g for g in gt if overlaps(e.t_start, e.t_end, g.t_start, g.t_end)]
+        out.append({"run": run["run"], "t_start": e.t_start, "upload": bool(hit),
+                    "seq": hit[0].meta.get("seq") if hit else None, **e.features})
+    return out
+
+
+def count_rule_params(bursts: list[dict]) -> dict:
+    carrying: dict = {}
+    for b in bursts:
+        if b["upload"]:
+            k = (b["run"], b["seq"])
+            if k not in carrying or b["n_up"] > carrying[k]["n_up"]:
+                carrying[k] = b
+    n_min = min(b["n_up"] for b in carrying.values())
+    cand = [b for b in bursts if b["n_up"] >= n_min]
+    thr, prf = best_f1_threshold(np.array([b["up_share"] for b in cand]), np.array([b["upload"] for b in cand], float))
+    neg = [b["up_share"] for b in cand if not b["upload"]]
+    return {"min_up_mpdus": int(n_min), "min_up_share": thr, "calib_at_threshold": prf,
+            "n_bursts": len(bursts), "n_candidates": len(cand), "n_uploads": len(carrying),
+            "min_share_carrying": min(b["up_share"] for b in carrying.values()),
+            "max_share_negative": max(neg) if neg else None}
 
 
 def _xy(args):
@@ -151,6 +186,10 @@ def main() -> None:
     n_small_max = max(b["n_small"] for b in bs)
     min_ratio = n_large_min / (n_large_min + n_small_max)
 
+    with ProcessPoolExecutor(a.workers) as ex:
+        cb = [b for lst in ex.map(count_bursts, runs, [gap] * len(runs)) for b in lst]
+    cr = count_rule_params(cb)
+
     windows = [float(w) for w in cfg["net_event"]["window_model"]["windows_s"]]
     step = min(windows)
     names = feature_names(windows)
@@ -175,6 +214,7 @@ def main() -> None:
                  "min_large_ratio": min_ratio, "n_large_min": n_large_min, "n_small_max": n_small_max,
                  "min_gap_between_uploads_s": min_upload_gap,
                  "gap_separates_uploads": gap < min_upload_gap},
+        "count_rule": {"burst_gap_s": gap, **cr},
         "per_run": rs, "per_upload_burst": bs,
         "window_model": {"step_s": step, "l2_grid": L2_GRID, "loso_mean_loglik": {str(k): v for k, v in ll.items()},
                          "l2": l2_best, "threshold": thr, "threshold_criterion": "max F1 on pooled LOSO",
@@ -187,6 +227,7 @@ def main() -> None:
     overlay = {"net_event": {
         "rule": {"burst_gap_s": gap, "min_burst_bytes": min_bytes, "large_frame_bytes": large,
                  "min_large_ratio": min_ratio},
+        "count_rule": {"burst_gap_s": gap, "min_up_mpdus": cr["min_up_mpdus"], "min_up_share": cr["min_up_share"]},
         "window_model": {"path": a.model_out, "step_s": step, "threshold": thr, "l2": l2_best}}}
     kinds = {r.get("source", "synthetic") for r in runs}
     banner = ("DERIVED FROM REAL CAPTURES (tools/real_session)" if kinds == {"real"} else
@@ -195,7 +236,7 @@ def main() -> None:
     text = (f"# {banner}.\n# source: {src}\n"
             f"# rules: see net_event/calibrate.py docstring\n" + yaml.safe_dump(overlay, sort_keys=False))
     Path(a.out_config).write_text(text)
-    print(json.dumps({"rule": res["rule"], "window_model": {k: res["window_model"][k] for k in
+    print(json.dumps({"rule": res["rule"], "count_rule": res["count_rule"], "window_model": {k: res["window_model"][k] for k in
                                                             ("step_s", "l2", "threshold", "loso_at_threshold")}},
                      indent=1))
 

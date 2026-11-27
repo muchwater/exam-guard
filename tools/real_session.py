@@ -14,6 +14,9 @@ is the device's data frame with MPDU length payload + UDP 8 + IP (40 for IPv6, 2
 + CCMP 8 + LLC/SNAP 8 + MIC 8 (FCS excluded; same constants as configs/default.yaml synth.netsim.encap). The
 offset is the median over markers of (t_send - t_first_frame), t_first_frame being the earliest candidate within
 half the marker spacing of the consensus (later ones are retries); its error is the device's queueing + air time (sub-ms here).
+--offset S skips the markers when the sniffer and the uploader share one clock (e.g. the board's own dongle sniffing
+the board's uploads: offset 0). --ba-recon first reconstructs the device's MPDUs from BlockAck frames
+(capture/ba_recon.py), for sniffers that cannot decode its data frames (RTL8192EU, LDPC).
 Segments cut the session at the midpoints of the largest gaps between activities so that
 calibrate/evaluate can treat them as separate sessions (leave-one-session-out). Labels and pcap slices are
 written next to the capture (data/raw is not committed; rows carry the real MAC).
@@ -28,7 +31,8 @@ import numpy as np
 
 from capture.macfilter import MacAllowlist
 from capture.pcap_io import iter_raw, read_pcap, write_pcap
-from capture.dot11 import parse_frame
+from capture.ba_recon import reconstruct
+from capture.dot11 import LINKTYPE_IEEE802_11_RADIOTAP, parse_frame
 from tools.ota_session import MARKER_SPACING_S
 
 UDP_HDR, QOS_HDR, CCMP_HDR, LLC, MIC = 8, 26, 8, 8, 8   # see module docstring
@@ -83,12 +87,18 @@ def main() -> None:
     ap.add_argument("--segments", type=int, default=1)
     ap.add_argument("--split", choices=["alternate", "calib", "eval"], default="alternate")
     ap.add_argument("--out")
+    ap.add_argument("--offset", type=float, help="known clock offset uploader - sniffer [s] (skips the markers)")
+    ap.add_argument("--ba-recon", action="store_true", help="reconstruct MPDUs from BlockAcks (capture/ba_recon)")
     a = ap.parse_args()
     S = Path(a.session)
     dev = a.device.lower()
-    off, picked = marker_offset(S / a.pcap, load_jsonl(S / a.markers), dev)
-    print(f"clock offset (uploader - sniffer) {off:+.4f} s from {len(picked)} markers "
-          f"(spread {1e3 * (max(picked) - min(picked)):.2f} ms)")
+    if a.offset is not None:
+        off = a.offset
+        print(f"clock offset (uploader - sniffer) {off:+.4f} s (given)")
+    else:
+        off, picked = marker_offset(S / a.pcap, load_jsonl(S / a.markers), dev)
+        print(f"clock offset (uploader - sniffer) {off:+.4f} s from {len(picked)} markers "
+              f"(spread {1e3 * (max(picked) - min(picked)):.2f} ms)")
     if a.cmd == "offset":
         return
     ups = shift(load_jsonl(S / a.uploads), off)
@@ -96,6 +106,10 @@ def main() -> None:
     cuts = cut_points(ups + bg, a.segments) if a.segments > 1 else []
     edges = [-np.inf] + cuts + [np.inf]
     raw = list(iter_raw(open(S / a.pcap, "rb")))
+    if a.ba_recon:
+        frames, counts = reconstruct([(ts, d) for ts, d, _o, _lt in raw], [dev])
+        print("BA reconstruction:", {d: n for (_dev, d), n in counts.items()})
+        raw = [(ts, d, len(d), LINKTYPE_IEEE802_11_RADIOTAP) for ts, d in frames]
     allow = MacAllowlist([dev])
     out_rows = []
     for k in range(len(edges) - 1):
@@ -119,7 +133,8 @@ def main() -> None:
         out_rows.append({"run": f"{S.name}/{tag}", "preset": a.preset, "split": split, "device": dev,
                          "pcap": str(pcap), "labels": str(S / f"{tag}.labels.jsonl"),
                          "background": str(S / f"{tag}.background.jsonl"), "t0": frames[0][0],
-                         "uploads": len(u), "clock_offset_s": off, "source": "real"})
+                         "uploads": len(u), "clock_offset_s": off, "source": "real",
+                         **({"recon": "ba"} if a.ba_recon else {})})
         print(f"{tag}: {len(frames)} frames, {len(u)} uploads, {len(b)} background, split {split}")
     if a.out:
         with open(a.out, "a") as f:

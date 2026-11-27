@@ -1,0 +1,152 @@
+{
+ "what": "RTL8192EU (board dongle) RX counters and patched-driver probe: why HT data of the team device is not captured",
+ "date": "2026-11-27",
+ "counters": {
+  "source": "vendor 8192eu /proc read_reg every ~0.2 s; BB 0xF90/0xF94/0xF84/0xF88, MAC 0x664 RXERR_RPT (hal/hal_com.c rtw_dump_*_rx_counters); counts include every device on channel 2",
+  "traffic": "board idle 15 s, 6 x UXGA JPEG upload (499952 B), idle 15 s, 3 x 2 MB download, idle 10 s (tools/ota_netns.sh path)",
+  "rate_per_s": {
+   "gap": {
+    "phy_ht_ok": 0.05,
+    "phy_ht_crc": 0.69,
+    "phy_ofdm_ok": 33.16,
+    "phy_ofdm_crc": 42.98,
+    "phy_cck_ok": 78.95,
+    "phy_cck_crc": 33.02,
+    "mac_ofdm_ok": 35.03,
+    "mac_ofdm_err": 44.78,
+    "mac_ofdm_fa": 0.34,
+    "mac_cck_ok": 101.75,
+    "mac_cck_err": 35.62,
+    "mac_ht_ok": 0.34,
+    "mac_ht_err": 0.59,
+    "mac_ht_fa": 0.0,
+    "mac_drop": 0.0
+   },
+   "idle": {
+    "phy_ht_ok": 0.0,
+    "phy_ht_crc": 0.5,
+    "phy_ofdm_ok": 73.56,
+    "phy_ofdm_crc": 63.92,
+    "phy_cck_ok": 83.22,
+    "phy_cck_crc": 31.96,
+    "mac_ofdm_ok": 78.08,
+    "mac_ofdm_err": 67.51,
+    "mac_ofdm_fa": 0.25,
+    "mac_cck_ok": 109.03,
+    "mac_cck_err": 35.02,
+    "mac_ht_ok": 0.23,
+    "mac_ht_err": 0.45,
+    "mac_ht_fa": 0.0,
+    "mac_drop": 0.0
+   },
+   "upload": {
+    "phy_ht_ok": 0.0,
+    "phy_ht_crc": 134.29,
+    "phy_ofdm_ok": 574.15,
+    "phy_ofdm_crc": 43.0,
+    "phy_cck_ok": 50.55,
+    "phy_cck_crc": 25.65,
+    "mac_ofdm_ok": 588.48,
+    "mac_ofdm_err": 43.76,
+    "mac_ofdm_fa": 0.0,
+    "mac_cck_ok": 56.58,
+    "mac_cck_err": 22.63,
+    "mac_ht_ok": 0.0,
+    "mac_ht_err": 141.84,
+    "mac_ht_fa": 0.0,
+    "mac_drop": 0.0
+   },
+   "page_load": {
+    "phy_ht_ok": 0.0,
+    "phy_ht_crc": 97.37,
+    "phy_ofdm_ok": 321.88,
+    "phy_ofdm_crc": 55.64,
+    "phy_cck_ok": 34.94,
+    "phy_cck_crc": 24.59,
+    "mac_ofdm_ok": 332.87,
+    "mac_ofdm_err": 57.58,
+    "mac_ofdm_fa": 0.0,
+    "mac_cck_ok": 41.73,
+    "mac_cck_err": 18.44,
+    "mac_ht_ok": 0.0,
+    "mac_ht_err": 100.28,
+    "mac_ht_fa": 0.0,
+    "mac_drop": 0.0
+   }
+  },
+  "phase_duration_s": {
+   "gap": 40.74,
+   "idle": 39.83,
+   "upload": 1.33,
+   "page_load": 3.09
+  }
+ },
+ "probe": {
+  "driver": "8192eu + drivers/rtl8192eu_monitor_meta.patch, REG_RCR |= ACRC32 (0x9000382f -> 0x9000392f)",
+  "crc_error_frames_passed_up": 6556,
+  "of_which_ht": 11,
+  "attributed_to_team_device": [
+   {
+    "len": 8111,
+    "mcs": 7,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 0,
+    "bw": 0,
+    "blockack": "to_device (uplink PPDU)",
+    "ba_minus_frame_tsft_us": 4885
+   },
+   {
+    "len": 7166,
+    "mcs": 7,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 0,
+    "bw": 0,
+    "blockack": "to_device (uplink PPDU)",
+    "ba_minus_frame_tsft_us": 5057
+   },
+   {
+    "len": 3510,
+    "mcs": 7,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 0,
+    "bw": 0,
+    "blockack": "to_device (uplink PPDU)",
+    "ba_minus_frame_tsft_us": 4366
+   },
+   {
+    "len": 1910,
+    "mcs": 4,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 0,
+    "bw": 0,
+    "blockack": "to_device (uplink PPDU)",
+    "ba_minus_frame_tsft_us": 5231
+   },
+   {
+    "len": 5212,
+    "mcs": 6,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 1,
+    "bw": 0,
+    "blockack": "from_device (downlink PPDU)",
+    "ba_minus_frame_tsft_us": 1976
+   },
+   {
+    "len": 508,
+    "mcs": 6,
+    "ldpc": true,
+    "sgi": true,
+    "stbc": 1,
+    "bw": 0,
+    "blockack": "from_device (downlink PPDU)",
+    "ba_minus_frame_tsft_us": 1976
+   }
+  ],
+  "attribution_rule": "CRC-error HT frame immediately followed (next good frame) by a BlockAck to/from the team device within 6 ms TSFT; others only counted"
+ }
+}

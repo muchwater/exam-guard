@@ -1,5 +1,12 @@
 # 실측 세션 녹화 절차 (spark3 sniffer + 보드 업로더)
 
+> **2026-11-27 추가: 보드 동글만으로 녹화하는 경로.** 사용자 sudo가 필요 없다.
+> - 동글은 업로드 데이터를 복호하지 못한다(LDPC, `docs/monitor_mode_test.md`). 대신 BlockAck로 MPDU 수를 복원한다.
+> - 보드에서 vendor 드라이버를 올린다(부팅마다 한 번): `sudo rmmod rtl8xxxu; sudo insmod ~/drivers/rtl8192eu-linux-driver/8192eu.ko`
+> - 녹화: `bash tools/dongle_session.sh <이름> <seed>`(약 16분). 동글 캡처와 `tools.ota_session --plan calib`을 함께 돌린다.
+> - 색인: `python -m tools.real_session index --session data/raw/real/<이름> --device <MAC> --offset 0 --ba-recon --preset dongle_board --split calib|eval --out data/raw/real/index_dongle.jsonl`
+> - 보정과 평가는 4번과 같다. detector는 `count_rule`을 쓴다(`--detector count_rule`).
+
 목적: 실제 패킷으로 network detector를 다시 보정하고 평가한다. 합성 보정값은 실측에서 VGA를 놓쳤고, window model은 오탐을 냈다(`docs/real_capture_spark3.md`).
 
 ## 역할

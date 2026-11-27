@@ -94,8 +94,10 @@ eval split 결과 (event 단위):
 |---|---|---|---|---|
 | esp32_lan / esp32_lan_wifi / esp32_wan / linux_wan | 545 | 1.000 | 1.000 | 0 |
 | linux_browse (연속 브라우징만) | 0 | – | – | 0 |
-| linux_browse_wan (브라우징 중 업로드) | 9 | **0.000** | 1.000 | 0 |
+| linux_browse_wan (브라우징 중 업로드) | 9 | **0.000** | 0.889 | 0 |
 
 - **rule detector는 업로드 전용 기기에서는 완벽하다.** 하지만 같은 기기가 브라우징을 함께 하면 ACK 흐름 때문에 burst가 끊기지 않는다. 업로드가 큰 burst에 섞이면서 large ratio가 떨어져 모두 놓친다.
-- **window model**(Lumos식 multi-timescale)은 이 경우도 잡는다.
+- **window model**(Lumos식 multi-timescale)은 이 경우도 대부분 잡는다(8/9).
+  - 2026-11-27: detector가 학습 때와 달리 downlink feature를 0으로 넣던 버그를 고친 뒤 다시 평가한 값이다. 고치기 전에는 9/9였다.
+  - 같은 수정 뒤 spark3 실측 평가(`docs/real_capture_spark3.md`)는 그대로였다(10/10, 오탐 4).
 - 모든 수치는 위 가정 아래의 **합성** 결과이므로 실제 성능의 상한으로 봐야 한다. 실측 캡처로 다시 calibration해야 한다.

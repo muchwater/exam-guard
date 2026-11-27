@@ -1,0 +1,18 @@
+# DERIVED FROM REAL CAPTURES (tools/real_session).
+# source: net_event.calibrate on data/raw/real/index_dongle.jsonl split=calib -> data/measured/calib_real_dongle_v1.json
+# rules: see net_event/calibrate.py docstring
+net_event:
+  rule:
+    burst_gap_s: 0.1055610179901123
+    min_burst_bytes: 2338
+    large_frame_bytes: 26
+    min_large_ratio: 0.9468085106382979
+  count_rule:
+    burst_gap_s: 0.1055610179901123
+    min_up_mpdus: 90
+    min_up_share: 0.5923566878980892
+  window_model:
+    path: data/models/net_logreg_dongle_v1.npz
+    step_s: 1.0
+    threshold: 0.2102355348935689
+    l2: 1.0

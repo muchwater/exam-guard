@@ -1,6 +1,6 @@
 """Network event detectors behind one interface.
 
-    det = build_detector(cfg)           # "rule" or "window_model" (configs: net_event.detector)
+    det = build_detector(cfg)           # "rule", "count_rule" or "window_model" (configs: net_event.detector)
     for pkt in packets:
         for ev in det.update(pkt): ...  # NetEvent(s) whose decision became final
     det.advance(now)                    # let time pass without packets (live mode)
@@ -92,6 +92,67 @@ class RuleDetector(NetDetector):
     def open_bursts(self) -> list[Burst]:
         """Bursts still in progress (for live display)."""
         return [s.cur for s in self.seg.values() if s.cur is not None]
+
+
+class CountRuleDetector(NetDetector):
+    """Upload burst = uplink burst with enough MPDUs that also outnumber the device's downlink MPDUs.
+
+    Uses frame counts only, so it also runs on BlockAck-reconstructed streams (capture/ba_recon.py), whose pseudo
+    frames carry no size. up_share = n_up / (n_up + n_down) over the burst interval: TCP acknowledges about every
+    second data segment (RFC 1122 4.2.3.2 delayed ACK, RFC 5681 4.2), so the data direction of a bulk transfer holds
+    roughly two thirds of the device's MPDUs - an upload is uplink-dominant, a download is not.
+    """
+
+    name = "count_rule"
+
+    def __init__(self, burst_gap_s: float, min_up_mpdus: int, min_up_share: float):
+        self.burst_gap_s, self.min_up_mpdus, self.min_up_share = burst_gap_s, min_up_mpdus, min_up_share
+        self.seg: dict[str, BurstSegmenter] = {}
+        self.down: dict[str, collections.deque] = {}
+
+    @classmethod
+    def from_config(cls, cfg: dict) -> "CountRuleDetector":
+        r = "net_event.count_rule."
+        gap, n, share = require(cfg, r + "burst_gap_s", r + "min_up_mpdus", r + "min_up_share")
+        return cls(float(gap), int(n), float(share))
+
+    def _judge(self, bursts: list[Burst]) -> list[NetEvent]:
+        out = []
+        for b in bursts:
+            n_down = sum(1 for t in self.down.get(b.device, ()) if b.t_start <= t <= b.t_end)
+            share = b.n_frames / (b.n_frames + n_down)
+            if b.n_frames >= self.min_up_mpdus and share >= self.min_up_share:
+                out.append(NetEvent(b.t_start, b.t_end, b.device, score=share, detector=self.name,
+                                    features={"n_up": b.n_frames, "n_down": n_down, "up_share": share}))
+        return out
+
+    def _prune(self, dev: str, now: float) -> None:
+        s, dq = self.seg.get(dev), self.down.get(dev)
+        keep_from = s.cur.t_start if s is not None and s.cur is not None else now - self.burst_gap_s
+        while dq and dq[0] < keep_from:
+            dq.popleft()
+
+    def update(self, pkt: PacketRecord) -> list[NetEvent]:
+        closed: list[Burst] = []
+        for s in self.seg.values():
+            closed += s.advance(pkt.ts)
+        out = self._judge(closed)
+        if pkt.is_data and pkt.to_ds and not pkt.from_ds and pkt.addr2:
+            s = self.seg.get(pkt.addr2)
+            if s is None:
+                s = self.seg[pkt.addr2] = BurstSegmenter(pkt.addr2, self.burst_gap_s)
+            s.update(pkt)
+            self._prune(pkt.addr2, pkt.ts)
+        elif pkt.is_data and pkt.from_ds and not pkt.to_ds and pkt.addr1:
+            self.down.setdefault(pkt.addr1, collections.deque()).append(pkt.ts)
+            self._prune(pkt.addr1, pkt.ts)
+        return out
+
+    def advance(self, now: float) -> list[NetEvent]:
+        return self._judge([b for s in self.seg.values() for b in s.advance(now)])
+
+    def flush(self) -> list[NetEvent]:
+        return self._judge([b for s in self.seg.values() for b in s.flush()])
 
 
 # ---------------------------------------------------------------- model-based detector
@@ -209,7 +270,9 @@ class WindowModelDetector(NetDetector):
 
     def update(self, pkt: PacketRecord) -> list[NetEvent]:
         out = self.advance(pkt.ts)
-        dev = pkt.addr2 if (pkt.is_data and pkt.to_ds and not pkt.from_ds) else None
+        # both directions: the down_* features need the device's downlink frames, as in training (train.session_xy)
+        dev = (pkt.addr2 if (pkt.is_data and pkt.to_ds and not pkt.from_ds) else
+               pkt.addr1 if (pkt.is_data and pkt.from_ds and not pkt.to_ds) else None)
         if dev is None:
             return out
         if dev not in self.buf:
@@ -238,6 +301,8 @@ def build_detector(cfg: dict) -> NetDetector:
         return RuleDetector.from_config(cfg)
     if kind == "window_model":
         return WindowModelDetector.from_config(cfg)
+    if kind == "count_rule":
+        return CountRuleDetector.from_config(cfg)
     raise ValueError(f"unknown net_event.detector: {kind}")
 
 

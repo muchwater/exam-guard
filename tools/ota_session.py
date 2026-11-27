@@ -16,7 +16,8 @@ Plans (values from configs/default.yaml unless noted):
   calib  every synth.netsim.image.resolutions x REPS uploads in random order, gaps U[GAP_MIN, GAP_MAX];
          after every len(resolutions) uploads one background block: page loads (each synth.netsim
          page_weight_bytes percentile once, back to back), sparse large pings, small periodic pings, idle;
-         then CONCURRENT uploads made while page loads run (browse + upload); ~16 min
+         ~15 min. Uploads made during page loads are out of scope (README "범위") and not recorded; sessions
+         of the earlier plan (dongle_calib1/2) end with 4, labelled "concurrent": "page_load".
 JPEG payloads are synth.netsim.images.jpeg_encode (the synthetic set's exact bytes).
 """
 from __future__ import annotations
@@ -26,7 +27,6 @@ import http.client
 import json
 import socket
 import subprocess
-import threading
 import time
 from pathlib import Path
 
@@ -38,7 +38,6 @@ from synth.netsim.images import jpeg_encode
 REPS = 4             # analysis choice: uploads per resolution (24 positives per calib session)
 GAP_MIN = 12.0       # source: > max(net_event.window_model.windows_s) = 10 s, so no window spans two uploads
 GAP_MAX = 25.0       # analysis choice: bounds the session length (~16 min)
-CONCURRENT = 4       # analysis choice: browse + upload cases per session
 PING_LARGE = (1400, 0.5, 20)   # bytes, interval s, duration s: the sparse large-frame pattern that produced
 #                                window-model false events in docs/real_capture_spark3.md
 PING_SMALL = (56, 1.0, 30)     # ping(8) default payload 56 B at its default 1 s interval, 30 s
@@ -54,12 +53,10 @@ class Session:
         self.out = out
         out.mkdir(parents=True, exist_ok=True)
         self.files = {k: open(out / f"{k}.jsonl", "a") for k in ("activities", "markers")}
-        self.lock = threading.Lock()
 
     def log(self, rec: dict, kind: str = "activities") -> None:
-        with self.lock:
-            self.files[kind].write(json.dumps(rec) + "\n")
-            self.files[kind].flush()
+        self.files[kind].write(json.dumps(rec) + "\n")
+        self.files[kind].flush()
 
     def markers(self) -> None:
         s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
@@ -71,14 +68,14 @@ class Session:
             time.sleep(MARKER_SPACING_S)
         s.close()
 
-    def upload(self, body: bytes, resolution: str, seq: int, concurrent: str | None = None) -> None:
+    def upload(self, body: bytes, resolution: str, seq: int) -> None:
         t0 = time.time()
         c = http.client.HTTPConnection(self.host, 8080, timeout=30)
         c.request("POST", "/upload", body, {"Content-Type": "image/jpeg"})
         st = c.getresponse().status
         c.close()
         self.log({"kind": "upload", "seq": seq, "t_start": t0, "t_end": time.time(), "bytes": len(body),
-                  "resolution": resolution, "status": st, "concurrent": concurrent})
+                  "resolution": resolution, "status": st})
 
     def page_load(self, nbytes: int) -> None:
         t0 = time.time()
@@ -164,23 +161,6 @@ def main() -> None:
                 time.sleep(GAP_MIN)
                 s.ping("ping_small", *PING_SMALL)
                 s.idle(IDLE_S)
-        for _ in range(CONCURRENT):                                  # browse + upload
-            stop = threading.Event()
-            brng = np.random.default_rng(int(rng.integers(1 << 31)))   # own generator: rng is not thread-safe
-
-            def browse(stop: threading.Event = stop, brng: np.random.Generator = brng) -> None:
-                while not stop.is_set():
-                    s.page_load(int(brng.choice(page_sizes(cfg))))
-            th = threading.Thread(target=browse)
-            th.start()
-            time.sleep(float(rng.uniform(2.0, 4.0)))
-            res = str(rng.choice(resolutions))
-            s.upload(jpeg_encode(ref, res, q), res, seq, concurrent="page_load")
-            seq += 1
-            time.sleep(2.0)
-            stop.set()
-            th.join()
-            time.sleep(float(rng.uniform(GAP_MIN, GAP_MAX)))
     s.markers()
     s.close()
     print(f"done: {seq if a.plan == 'calib' else 1} uploads -> {out}")

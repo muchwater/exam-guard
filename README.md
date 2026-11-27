@@ -14,6 +14,18 @@ KAIST On-device AI 텀 프로젝트(Rubik Pi 3, QCS6490).
 - **radiotap**: monitor mode에서 frame마다 붙는 metadata header(RSSI, rate, channel 등).
 - **inter-arrival time(IAT)**: 같은 기기가 보낸 연속 frame 사이의 시간 간격.
 
+## 범위 (2026-11-27)
+수업 데모용이므로 **일반 업로드**만 잡는다.
+- 일반 업로드: 부정행위 기기(초소형 카메라, AI 안경)가 다른 통신 없이 사진을 올리는 경우.
+- 범위 밖:
+  - 같은 기기가 웹 페이지를 열거나 다운로드하는 중에 올리는 업로드. 보드 동글로는 0/8이었다(`docs/monitor_mode_test.md`).
+  - LTE·Bluetooth로 보내는 경우(아래 "한계").
+- 코드 반영:
+  - 범위 밖 업로드의 정답 레이블에는 `"concurrent"`가 붙는다(`net_event/labels.py`).
+  - 평가(`net_event.evaluate`)는 이 업로드를 recall에서 빼고 `out_of_scope`로 따로 보고한다. 이 업로드 위의 event는 오탐으로 세지 않는다.
+  - 보정(`net_event.calibrate`)은 이 업로드를 쓰지 않는다.
+  - 녹화 계획(`tools/ota_session.py --plan calib`)은 이런 업로드를 더 만들지 않는다.
+
 선행 연구: Lumos(Sharma et al., USENIX Security 2022). 암호화된 802.11 트래픽의 크기와 시간 정보만으로 숨겨진 IoT 기기를 식별한다. `net_event`의 multi-timescale window는 Lumos Algorithm 1을 따른다.
 
 ## 구조
@@ -41,6 +53,7 @@ common/     공통 event 타입, config(TBD 검사), latency 기록
 config는 겹쳐 쓴다(`--config`를 여러 번 주면 뒤의 것이 앞의 것을 덮는다).
 - `configs/default.yaml`: 실제 시스템용. 근거가 없는 값은 TBD로 남긴다.
 - `configs/netsim_v1_derived.yaml`: 합성 데이터에서 유도한 network detector 값. 잠정값이다.
+- `configs/real_dongle_v1_derived.yaml`: 보드 동글로 녹화한 실측 세션에서 보정한 값. detector는 `count_rule`이다.
 - `configs/examcheat.yaml`: ExamCheat-MultiV에서 측정한 B1 임계값 제안.
 
 ## 설치
@@ -81,6 +94,23 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
     --out data/runs/demo_synth/replay --config configs/netsim_v1_derived.yaml --config configs/examcheat.yaml \
     --config data/runs/demo_synth/session.yaml --render
 ```
+### 보드 동글 실측 패킷으로 오프라인 데모 (데모 경로)
+```bash
+S=data/raw/real/dongle_calib1          # tools/dongle_session.sh로 녹화한 세션 (docs/real_capture_runbook.md)
+E=data/external/examcheat/V1/V1
+python -m capture.ba_recon --in $S/capture.pcap --out $S/recon.pcap --device <team MAC>
+python -m tools.make_demo_session --out data/runs/demo_dongle --clip $E/nor10.mp4 --clip $E/m16.mp4 \
+    --clip $E/n11.mp4 --clip $E/nor11.mp4 --upload-in-class mobile_phone --upload-in-class hidden_notes \
+    --real-session $S --real-device <team MAC> --real-pcap recon.pcap --real-offset 0 --real-resolution 1600x1200
+python -m replay.run --pcap data/runs/demo_dongle/net.pcap --video data/runs/demo_dongle/video.mp4 \
+    --out data/runs/demo_dongle/replay --config configs/real_dongle_v1_derived.yaml --config configs/examcheat.yaml \
+    --config data/runs/demo_dongle/session.yaml --render
+```
+- 동글은 업로드 데이터를 복호하지 못한다. 그래서 BlockAck로 MPDU 수를 복원한 `recon.pcap`을 쓰고, detector는 `count_rule`이다.
+- 실측 업로드 버스트를 영상 클립의 시점에 맞춰 옮긴 composite다. 버스트 안의 패킷과 간격은 실제 값이다.
+- 2026-11-27 결과: UXGA 업로드 2회가 모두 `count_rule` event가 됐고, alert 1건(S1)이 났다.
+- 라이브(`demo.live`)는 BlockAck 복원을 거치지 않으므로 동글로는 업로드를 잡지 못한다. 데모는 녹화 재생으로 한다.
+
 `session.yaml`에는 데모 전용 값(fusion pre/post 0, min_duration 0)이 들어 있다. 실측값이 아니므로 파일 안에 그렇게 표시해 두었다. ExamCheat 영상을 보여 줄 때는 CC BY-SA 4.0 출처를 함께 표기한다.
 
 각 모듈은 단독 실행할 수 있다. 수치가 `TBD`인 파라미터가 필요한 경로는 `TBDError`로 멈추고 어떤 key인지 알려 준다(임의 값으로 돌지 않음).
@@ -88,11 +118,14 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
 ## 핵심 설계
 - **"언제"는 패킷, "누가"는 vision**: B1(고개 숙임)은 정상 필기와 자세가 겹치지만, 업로드가 없으면 alert를 내지 않는다. 업로드 순간에 여러 좌석이 B1이면, 업로드가 반복될 때 좌석별로 증거를 누적해 한 좌석으로 좁힌다(`fusion/seat_evidence.py`, `docs/seat_evidence.md`). 이 과정에는 조정 상수가 없고, 시험 전체에서 정상 좌석 오지목 확률을 α 이하로 묶는다.
 - **replay 우선**: 모든 모듈은 입력 timestamp만 쓰고 wall clock은 쓰지 않는다. 그래서 라이브에서 녹화한 pcap과 영상을 replay하면 같은 결과가 나온다. 동기화 방법은 `docs/time_sync.md`에 있다.
-- **detector 교체**: `NetDetector` interface(`update`/`advance`/`flush`) 아래에 `RuleDetector`와 `WindowModelDetector`(logistic 또는 ONNX)가 있다. 바꿀 때는 `net_event.detector` 설정만 고치면 된다.
+- **detector 교체**: `NetDetector` interface(`update`/`advance`/`flush`) 아래에 세 가지가 있다. 바꿀 때는 `net_event.detector` 설정만 고치면 된다.
+  - `RuleDetector`: 크기 기반. 데이터를 복호하는 sniffer용이다.
+  - `CountRuleDetector`: MPDU 수 기반. 보드 동글의 BlockAck 복원 스트림용이다.
+  - `WindowModelDetector`: logistic 또는 ONNX.
 - **NPU + fallback**: pose는 QNN HTP 상주 runner로 돌린다. 실패하면 ONNX Runtime CPU로 넘어간다. stage별 latency(ms)를 `latency.csv`로 남긴다.
 - **개인정보**: kernel BPF(`wlan addr1/addr2 <우리 MAC>`)로 다른 기기의 frame을 수집 단계에서 버리고, 읽을 때 한 번 더 거른다. allowlist가 비어 있으면 캡처를 거부한다.
 
-## 현재 상태 (2026-11-26)
+## 현재 상태 (2026-11-27)
 - 이상 행동: **B1 고개 숙임 유지 + B2 안경 만지기**로 확정했다.
   - ExamCheat-MultiV에서 B1 `head_drop`은 정상 필기와 구분되지 않았다(frame AUC 0.506).
   - B2는 데이터셋에 양성 샘플이 없다.
@@ -101,19 +134,18 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
   - 조건: 30석, 수학(업로드 30회), 촬영 자세 recall 0.8.
   - B1 임계값이 0.227이면 약 6번째 업로드에서 좌석이 특정된다.
   - 정상 좌석 오지목은 0.5% 이하다.
-- 네트워크: 합성 데이터(eval)에서 두 detector의 결과가 갈렸다.
-  - 업로드 전용 기기: rule과 window model 모두 recall 1.0, 오탐 0.
-  - 브라우징 중 업로드: rule은 0/9이고 window model은 8/9.
-  - 2026-11-27: window model detector가 downlink feature를 0으로 넣던 버그(학습과 불일치)를 고친 뒤의 값이다. 고치기 전에는 9/9였다.
+- 네트워크(합성 데이터 eval): 범위 안의 업로드 545회를 rule과 window model 모두 잡았고 오탐은 0이었다.
+  - 범위 밖인 브라우징 중 업로드는 참고로 rule 0/9, window model 8/9였다.
   - 합성 결과이므로 실제 성능의 상한으로 본다(`docs/netsim_model.md`).
 - monitor mode 실측(`docs/monitor_mode_test.md`): 보드 동글(RTL8192EU)은 다른 기기의 HT 데이터를 복호하지 못한다.
   - 원인은 LDPC다. 보드와 AP가 LDPC를 쓰는데 이 칩에는 LDPC 복호기가 없다. 칩 카운터와 패치한 드라이버(`drivers/`)로 확정했다.
   - **대안: BlockAck 순번으로 MPDU 수를 복원한다(`capture/ba_recon.py`).** spark3 실측과 비교해 순번 개수가 거의 일치했다.
-  - 보드 혼자 녹화한 세션 2개로 세션 단위 교차평가를 했다(`count_rule`). 일반 업로드 46/48, 오탐 32분에 1건, 브라우징 중 업로드 0/8.
+  - 보드 혼자 녹화한 세션 2개로 세션 단위 교차평가를 했다(`count_rule`). 일반 업로드 46/48, 오탐 32분에 1건.
+  - **데모 네트워크 경로로 쓴다**(위 "보드 동글 실측 패킷으로 오프라인 데모").
 - 실측 캡처(`docs/real_capture_spark3.md`): 연구실 머신 spark3의 내장 Wi-Fi(MT7925)로 실제 업로드 패킷을 잡았다.
   - 합성 보정 그대로 적용한 결과: window model 10/10(오탐 4), rule 5/10(오탐 0).
-  - 실측 데이터로 다시 보정해야 한다. 녹화 절차는 `docs/real_capture_runbook.md`에 있다(사용자는 spark3 sudo 1회).
   - 실측 업로드 버스트로 만든 오프라인 데모(composite)에서 net event 2/2, alert 1건(S1)이 나왔다.
+  - 데모 경로를 보드 동글로 정했으므로 spark3 재보정은 선택 사항이다. MPDU 크기가 필요할 때만 쓴다(사용자 sudo 1회, `docs/real_capture_runbook.md`).
 - NPU(`vision/native/README.md`): pose 모델을 QAIRT 2.46으로 w8a16(가중치 채널별)으로 양자화해 보드 HTP에서 돌린다.
   - vision 전체 시간: 41 ms/frame(약 24 fps). CPU fp32는 316 ms다.
   - 정확도(CPU fp32 대비): 키포인트 오차 중앙값 0.39%, head_drop 편향 −0.016.
@@ -122,6 +154,7 @@ python -m replay.run --pcap data/runs/demo_synth/net.pcap --video data/runs/demo
 - 보드 측정(카메라 지연, 좌석)은 아직 하지 않았다. `python -m tools.list_tbd`로 남은 항목을 본다.
 
 ## 한계
+- 같은 기기가 브라우징·다운로드를 하면서 올리는 업로드는 범위 밖이다. 보드 동글로는 MPDU 크기를 알 수 없어 페이지 다운로드와 구분되지 않는다.
 - Wi-Fi로 전송하는 경우만 탐지한다. LTE나 Bluetooth로 휴대폰에 넘긴 뒤 휴대폰이 셀룰러로 업로드하면 sniffer로는 보이지 않는다.
 - sniffer 하나로는 위치를 알 수 없다. "누가"는 vision이 맡는다.
 - 이상 행동 후보(고개 숙임 유지 등)는 정상 필기 자세와 겹친다. 그래서 단독으로 alert를 내지 않고 network event와 겹칠 때만 낸다.

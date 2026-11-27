@@ -4,7 +4,8 @@
         --rule-preset esp32_lan --rule-preset esp32_lan_wifi --rule-preset esp32_wan --rule-preset linux_wan \
         --out-json data/measured/calib_netsim_v1.json --out-config configs/netsim_v1_derived.yaml
 
-Every value is computed by a stated rule from the data (no hand-picked numbers):
+Every value is computed by a stated rule from the data (no hand-picked numbers). Only in-scope (plain) uploads
+are used (net_event.labels.in_scope); the window model alone still trains on every labelled upload:
   rule detector (calibrated on sessions where the device only uploads, i.e. --rule-preset):
     large_frame_bytes = min over sessions of the median uplink frame size inside uploads
                         (= the full-MSS data frame of the stack with the smallest MSS)
@@ -17,7 +18,9 @@ Every value is computed by a stated rule from the data (no hand-picked numbers):
     burst_gap_s       = the rule detector's burst_gap_s
     min_up_mpdus      = min uplink MPDUs of the burst carrying each upload (keeps every calibration upload)
     min_up_share      = up_share cut that maximizes F1 over all bursts with >= min_up_mpdus uplink MPDUs
-                        (positive = burst overlapping an upload)
+                        (positive = burst overlapping an upload; bursts on out-of-scope uploads are left out)
+    detector          = count_rule when every run is BlockAck-reconstructed (index "recon": "ba"): its pseudo
+                        frames carry no size, so the size-based detectors do not apply
   window model:
     step_s            = min(windows_s): with evaluations every shortest window, every upload overlaps
                         the shortest window of some evaluation
@@ -40,7 +43,7 @@ from capture.pcap_io import read_pcap
 from common.config import load_config
 from net_event.detector import CountRuleDetector, LogisticModel
 from net_event.features import BurstSegmenter, feature_names, is_uplink_data
-from net_event.labels import load_intervals, overlaps
+from net_event.labels import in_scope, load_intervals, overlaps
 from net_event.train import session_xy
 
 L2_GRID = [1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0, 1e3, 1e4]   # log-spaced candidates (choice, reported)
@@ -61,7 +64,7 @@ def rule_stats(run: dict) -> dict:
     up = _uplink(run)
     ts = np.asarray([p.ts for p in up])
     sz = np.asarray([p.frame_len for p in up])
-    gt = load_intervals(run["labels"])
+    gt = [g for g in load_intervals(run["labels"]) if in_scope(g)]
     sizes_in, max_iat = [], []
     for g in gt:
         lo, hi = np.searchsorted(ts, g.t_start, "left"), np.searchsorted(ts, g.t_end, "right")
@@ -83,7 +86,7 @@ def burst_stats(run: dict, gap: float, large: int) -> list[dict]:
         bursts += seg.update(p)
     bursts += seg.flush()
     out = []
-    for g in load_intervals(run["labels"]):
+    for g in (g for g in load_intervals(run["labels"]) if in_scope(g)):
         cand = [b for b in bursts if b.t_start <= g.t_end and b.t_end >= g.t_start]
         if not cand:
             out.append({"run": run["run"], "seq": g.meta.get("seq"), "bytes": 0, "large_ratio": 0.0,
@@ -104,8 +107,9 @@ def count_bursts(run: dict, gap: float) -> list[dict]:
     gt = load_intervals(run["labels"])
     out = []
     for e in CountRuleDetector(gap, 0, 0.0).run(pkts):
-        hit = [g for g in gt if overlaps(e.t_start, e.t_end, g.t_start, g.t_end)]
-        out.append({"run": run["run"], "t_start": e.t_start, "upload": bool(hit),
+        on = [g for g in gt if overlaps(e.t_start, e.t_end, g.t_start, g.t_end)]
+        hit = [g for g in on if in_scope(g)]
+        out.append({"run": run["run"], "t_start": e.t_start, "upload": bool(hit), "out_of_scope": bool(on) and not hit,
                     "seq": hit[0].meta.get("seq") if hit else None, **e.features})
     return out
 
@@ -118,7 +122,7 @@ def count_rule_params(bursts: list[dict]) -> dict:
             if k not in carrying or b["n_up"] > carrying[k]["n_up"]:
                 carrying[k] = b
     n_min = min(b["n_up"] for b in carrying.values())
-    cand = [b for b in bursts if b["n_up"] >= n_min]
+    cand = [b for b in bursts if b["n_up"] >= n_min and not b["out_of_scope"]]
     thr, prf = best_f1_threshold(np.array([b["up_share"] for b in cand]), np.array([b["upload"] for b in cand], float))
     neg = [b["up_share"] for b in cand if not b["upload"]]
     return {"min_up_mpdus": int(n_min), "min_up_share": thr, "calib_at_threshold": prf,
@@ -175,7 +179,7 @@ def main() -> None:
 
     with ProcessPoolExecutor(a.workers) as ex:
         rs = list(ex.map(rule_stats, rule_runs))
-    large = int(min(r["median_size_in_upload"] for r in rs))
+    large = int(min(r["median_size_in_upload"] for r in rs if r["median_size_in_upload"] is not None))
     gap = max(r["max_iat_in_upload"] for r in rs if r["max_iat_in_upload"] is not None)
     min_upload_gap = min(r["min_gap_between_uploads"] for r in rs if r["min_gap_between_uploads"] is not None)
     with ProcessPoolExecutor(a.workers) as ex:
@@ -229,6 +233,8 @@ def main() -> None:
                  "min_large_ratio": min_ratio},
         "count_rule": {"burst_gap_s": gap, "min_up_mpdus": cr["min_up_mpdus"], "min_up_share": cr["min_up_share"]},
         "window_model": {"path": a.model_out, "step_s": step, "threshold": thr, "l2": l2_best}}}
+    if all(r.get("recon") == "ba" for r in runs):
+        overlay["net_event"] = {"detector": "count_rule", **overlay["net_event"]}
     kinds = {r.get("source", "synthetic") for r in runs}
     banner = ("DERIVED FROM REAL CAPTURES (tools/real_session)" if kinds == {"real"} else
               "DERIVED FROM SYNTHETIC DATA - provisional until real captures exist" if kinds == {"synthetic"} else

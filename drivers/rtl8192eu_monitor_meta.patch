@@ -4,6 +4,7 @@ the RTL8192E cannot decode (LDPC; see docs/monitor_mode_test.md). Apply in the d
   2. monitor mode keeps CRC-error frames (rtw_recv.c already sets radiotap Flags BADFCS for them); the MAC passes
      them up only when REG_RCR (0x608) bit 8 ACRC32 is set, e.g. via /proc/net/rtl8192eu/<if>/write_reg
   3. radiotap MCS field reports the FEC type (LDPC bit of the RX descriptor)
+Diagnostic only: the demo path (BlockAck counts, capture/ba_recon.py) runs on the unpatched vendor driver.
 
 diff --git a/core/rtw_recv.c b/core/rtw_recv.c
 index ff6dd71..0d41469 100644

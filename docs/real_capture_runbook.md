@@ -1,11 +1,14 @@
 # 실측 세션 녹화 절차 (spark3 sniffer + 보드 업로더)
 
-> **2026-11-27 추가: 보드 동글만으로 녹화하는 경로.** 사용자 sudo가 필요 없다.
+> **2026-11-27 추가: 보드 동글만으로 녹화하는 경로 (데모 경로).** 사용자 sudo가 필요 없다.
 > - 동글은 업로드 데이터를 복호하지 못한다(LDPC, `docs/monitor_mode_test.md`). 대신 BlockAck로 MPDU 수를 복원한다.
 > - 보드에서 vendor 드라이버를 올린다(부팅마다 한 번): `sudo rmmod rtl8xxxu; sudo insmod ~/drivers/rtl8192eu-linux-driver/8192eu.ko`
-> - 녹화: `bash tools/dongle_session.sh <이름> <seed>`(약 16분). 동글 캡처와 `tools.ota_session --plan calib`을 함께 돌린다.
+> - 녹화: `bash tools/dongle_session.sh <이름> <seed> <보드 유선 인터페이스>`(약 15분).
+>   - 동글 캡처와 `tools.ota_session --plan calib`을 함께 돌린다.
+>   - 동글 인터페이스, 채널, 팀 MAC은 `configs/site_rubik.yaml`(git 제외)에서 읽는다.
 > - 색인: `python -m tools.real_session index --session data/raw/real/<이름> --device <MAC> --offset 0 --ba-recon --preset dongle_board --split calib|eval --out data/raw/real/index_dongle.jsonl`
-> - 보정과 평가는 4번과 같다. detector는 `count_rule`을 쓴다(`--detector count_rule`).
+> - 보정과 평가는 4번과 같다. 보정하면 detector가 `count_rule`로 지정된다(BlockAck 복원 세션일 때).
+> - 데모: README의 "보드 동글 실측 패킷으로 오프라인 데모"
 
 목적: 실제 패킷으로 network detector를 다시 보정하고 평가한다. 합성 보정값은 실측에서 VGA를 놓쳤고, window model은 오탐을 냈다(`docs/real_capture_spark3.md`).
 
@@ -31,7 +34,7 @@ ssh -t spark3 'sudo bash /tmp/eg_capture/linux_monitor_capture.sh wlP9s9 2 /tmp/
 ## 2. 트래픽 실행 (Claude, 보드, 약 16분)
 ```bash
 cd ~/exam-guard
-SRV=$(bash tools/ota_netns.sh up enxf074e4884cd9 $(.venv/bin/python -m tools.ota_session --print-blob-sizes) | tail -1)
+SRV=$(bash tools/ota_netns.sh up <보드 유선 인터페이스> $(.venv/bin/python -m tools.ota_session --print-blob-sizes) | tail -1)
 .venv/bin/python -m tools.ota_session --server "$SRV" --plan calib --seed 1 --out data/raw/real/calib1
 bash tools/ota_netns.sh down
 ```
@@ -39,8 +42,8 @@ bash tools/ota_netns.sh down
   - 시계 표식
   - 해상도 6종 × 4회 = 업로드 24회(간격 12–25 s)
   - 배경 블록 4회: 웹 페이지 로드(Web Almanac p10–p90 크기), 드문 큰 ping, 작은 주기 ping, 유휴
-  - 다운로드 중 업로드 4회
   - 시계 표식
+- 페이지 로드 중 업로드는 범위 밖이라 2026-11-27부터 넣지 않는다. 그 전에 녹화한 `dongle_calib1/2`에는 4회씩 있다(레이블 `"concurrent"`, 평가에서 제외).
 - 설정을 확인할 때는 `--plan smoke`(약 30초)를 먼저 돌린다.
 
 ## 3. 정지와 수집 (Claude)

@@ -6,6 +6,9 @@
 Per session: detector events vs ground-truth uploads by interval overlap (net_event.labels.match_events),
 plus false events per hour, the median event duration and the onset error (event start - upload start)
 of matched uploads. Sessions without uploads count only false events.
+Scope (net_event.labels): recall counts in-scope (plain) uploads only. Out-of-scope uploads (made during other
+traffic of the device) are reported apart as out_of_scope / out_of_scope_hit, and an event overlapping one is not
+counted as false.
 """
 from __future__ import annotations
 
@@ -22,20 +25,26 @@ from capture.pcap_io import read_pcap
 from common.config import load_config
 from net_event.calibrate import load_index
 from net_event.detector import build_detector
-from net_event.labels import load_intervals, overlaps
+from net_event.labels import in_scope, load_intervals, overlaps
 
 
 def eval_run(args) -> dict:
     cfg, run = args
     pkts = sorted(read_pcap(run["pcap"], MacAllowlist([run["device"]])), key=lambda p: p.ts)
     events = build_detector(cfg).run(pkts)
-    gt = load_intervals(run["labels"])
-    hit = [any(overlaps(e.t_start, e.t_end, g.t_start, g.t_end) for e in events) for g in gt]
-    false_ev = [e for e in events if not any(overlaps(e.t_start, e.t_end, g.t_start, g.t_end) for g in gt)]
+    every = load_intervals(run["labels"])
+    gt = [g for g in every if in_scope(g)]
+    out = [g for g in every if not in_scope(g)]
+
+    def hits(g) -> bool:
+        return any(overlaps(e.t_start, e.t_end, g.t_start, g.t_end) for e in events)
+    hit = [hits(g) for g in gt]
+    false_ev = [e for e in events if not any(overlaps(e.t_start, e.t_end, g.t_start, g.t_end) for g in every)]
     onset = [min((e.t_start - g.t_start for e in events if overlaps(e.t_start, e.t_end, g.t_start, g.t_end)),
                  key=abs) for g, h in zip(gt, hit) if h]
     dur_h = (pkts[-1].ts - pkts[0].ts) / 3600 if len(pkts) > 1 else 0.0
     return {"run": run["run"], "preset": run["preset"], "n_gt": len(gt), "n_hit": int(sum(hit)),
+            "n_out_of_scope": len(out), "n_out_of_scope_hit": int(sum(hits(g) for g in out)),
             "n_events": len(events), "n_false": len(false_ev), "hours": dur_h,
             "event_durations": [e.t_end - e.t_start for e in events], "onset_errors": onset}
 
@@ -52,6 +61,8 @@ def summarize(rows: list[dict]) -> dict:
         durs = [d for r in rs for d in r["event_durations"]]
         ons = [o for r in rs for o in r["onset_errors"]]
         out[k] = {"sessions": len(rs), "uploads": n_gt, "recall": n_hit / n_gt if n_gt else None,
+                  "out_of_scope": sum(r["n_out_of_scope"] for r in rs),
+                  "out_of_scope_hit": sum(r["n_out_of_scope_hit"] for r in rs),
                   "events": n_ev, "precision": (n_ev - n_false) / n_ev if n_ev else None,
                   "false_per_hour": n_false / hours if hours else None,
                   "event_dur_median_s": float(np.median(durs)) if durs else None,
@@ -81,12 +92,13 @@ def main() -> None:
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text(json.dumps(res, indent=1) + "\n")
     print(f"detector={res['detector']}")
-    fmt = "{:18s} {:>4} {:>7} {:>7} {:>7} {:>9} {:>9} {:>9}"
-    print(fmt.format("preset", "ses", "uploads", "recall", "prec", "false/h", "dur_med", "onset_med"))
+    fmt = "{:18s} {:>4} {:>7} {:>7} {:>7} {:>9} {:>9} {:>9} {:>11}"
+    print(fmt.format("preset", "ses", "uploads", "recall", "prec", "false/h", "dur_med", "onset_med", "out_of_scope"))
     for k, s in summ.items():
         f = lambda v, p=3: "-" if v is None else f"{v:.{p}f}"  # noqa: E731
         print(fmt.format(k, s["sessions"], s["uploads"], f(s["recall"]), f(s["precision"]), f(s["false_per_hour"], 1),
-                         f(s["event_dur_median_s"], 2), f(s["onset_err_median_s"], 3)))
+                         f(s["event_dur_median_s"], 2), f(s["onset_err_median_s"], 3),
+                         f"{s['out_of_scope_hit']}/{s['out_of_scope']} hit"))
 
 
 if __name__ == "__main__":

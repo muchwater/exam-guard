@@ -4,6 +4,12 @@
 
 t_start/t_end are on the uploader's clock; `offset_s` (uploader clock - sniffer clock,
 measured, see docs/capture_protocol.md) is subtracted to move them onto the sniffer clock.
+
+Project scope (README "범위"): a PLAIN upload, i.e. the device sends the image while it is not loading pages or
+downloading at the same time (the target is a dedicated camera / AI-glasses device). Uploads made during other
+traffic of the same device carry "concurrent": <what ran alongside> (tools/ota_session.py, synth/netsim); they are
+out of scope: evaluation neither counts them as misses nor counts events on them as false, and calibration ignores
+them (net_event.evaluate, net_event.calibrate).
 """
 from __future__ import annotations
 
@@ -27,6 +33,10 @@ def load_intervals(path: str | Path, offset_s: float = 0.0) -> list[Interval]:
                 d = json.loads(line)
                 out.append(Interval(d["t_start"] - offset_s, d["t_end"] - offset_s, d))
     return sorted(out, key=lambda i: i.t_start)
+
+
+def in_scope(i: Interval) -> bool:
+    return not i.meta.get("concurrent")
 
 
 def overlaps(a0: float, a1: float, b0: float, b1: float) -> bool:

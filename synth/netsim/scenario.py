@@ -126,7 +126,7 @@ def run(cfg: dict, preset: str, subject: Optional[str], mcs: int, resolution: Op
     with open(out.with_suffix(".labels.jsonl"), "w") as f:
         for i, u in enumerate(uploads):
             u.update(seq=i, resolution=resolution, quality=int(img["jpeg_quality"]), mcs=mcs, preset=preset,
-                     status=200, synthetic=True)
+                     status=200, synthetic=True, concurrent="page_load" if pr.get("browse") else None)
             f.write(json.dumps(u) + "\n")
     with open(out.with_suffix(".background.jsonl"), "w") as f:
         for p in sorted(pages, key=lambda d: d["t_start"]):

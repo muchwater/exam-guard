@@ -15,6 +15,10 @@ re-timed so that the upload starts at the requested time; only the timing is con
     python -m tools.make_demo_session --out data/runs/demo_real --clip ... --upload-in-class mobile_phone \
         --real-session data/raw/real/<s> --real-device <team MAC> --real-resolution 1600x1200
 
+Board-dongle sessions (tools/dongle_session.sh): the sniffer and the uploader share the board clock, and the dongle
+cannot decode the markers, so pass --real-offset 0 and the BlockAck-reconstructed capture (--real-pcap recon.pcap,
+capture/ba_recon.py); replay then needs the count_rule detector (configs/real_dongle_v1_derived.yaml).
+
 Writes video.mp4 (clips concatenated) + video.frames.csv (t = t0 + frame_index / container fps) +
 video.meta.json, net.pcap (+ labels) from synth.netsim with uploads at the chosen times, session.json
 (clip spans and classes) and session.yaml (overlay for replay).
@@ -41,6 +45,7 @@ from capture.macfilter import MacAllowlist
 from capture.dot11 import parse_frame
 from capture.pcap_io import iter_raw, write_pcap
 from synth.netsim.scenario import run as netsim_run
+from net_event.labels import Interval, in_scope
 from tools.real_session import load_jsonl, marker_offset, shift
 
 
@@ -84,11 +89,13 @@ def concat(clips: list[str], out: Path, t0: float) -> list[dict]:
 
 
 def real_composite(sdir: Path, device: str, uploads: str, markers: str, pcap: str, resolution: str | None,
-                   window: float, targets: list[float], out_pcap: Path) -> dict:
-    """Real upload bursts re-timed to `targets` (DEMO COMPOSITE: packet content/timing inside a burst is real)."""
+                   window: float, targets: list[float], out_pcap: Path, offset: float | None = None) -> dict:
+    """Real upload bursts re-timed to `targets` (DEMO COMPOSITE: packet content/timing inside a burst is real).
+    offset: uploader - sniffer clock when known (same clock: 0); None = from the in-band markers."""
     dev = device.lower()
-    off, picked = marker_offset(sdir / pcap, load_jsonl(sdir / markers), dev)
-    real = [u for u in shift(load_jsonl(sdir / uploads), off) if resolution in (None, u.get("resolution"))]
+    off, picked = (offset, []) if offset is not None else marker_offset(sdir / pcap, load_jsonl(sdir / markers), dev)
+    real = [u for u in shift(load_jsonl(sdir / uploads), off)
+            if resolution in (None, u.get("resolution")) and in_scope(Interval(u["t_start"], u["t_end"], u))]
     if not real:
         raise SystemExit(f"no real uploads with resolution {resolution}")
     allow = MacAllowlist([dev])
@@ -126,6 +133,8 @@ def main() -> None:
     ap.add_argument("--real-uploads", default="uploads.labels.jsonl")
     ap.add_argument("--real-markers", default="markers.jsonl")
     ap.add_argument("--real-pcap", default="capture.pcap")
+    ap.add_argument("--real-offset", type=float,
+                    help="uploader - sniffer clock (s) when known, e.g. 0 for board-dongle sessions; skips markers")
     ap.add_argument("--real-resolution", help="re-use only real uploads of this resolution")
     ap.add_argument("--real-window", type=float, default=1.0,
                     help="DEMO-ONLY: seconds of real capture kept before/after each upload")
@@ -143,7 +152,7 @@ def main() -> None:
                  [(s["t_start"] + s["t_end"]) / 2 for s in spans if s["class"] in a.upload_in_class])
     if a.real_session:
         meta = real_composite(Path(a.real_session), a.real_device, a.real_uploads, a.real_markers, a.real_pcap,
-                              a.real_resolution, a.real_window, ups, out / "net.pcap")
+                              a.real_resolution, a.real_window, ups, out / "net.pcap", a.real_offset)
         dev = a.real_device.lower()
     else:
         if a.preset is None or a.mcs is None or a.resolution is None:

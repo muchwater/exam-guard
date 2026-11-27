@@ -12,7 +12,8 @@ capture:
   snaplen: 262144     # source: tcpdump(1) man page -- default snapshot length 262144 bytes
 
 net_event:
-  detector: rule      # rule | window_model (same NetDetector interface)
+  detector: rule      # rule | count_rule | window_model (same NetDetector interface). count_rule is for BlockAck-
+                      #   reconstructed streams (capture/ba_recon.py: board RTL8192EU dongle), whose frames carry no size
   rule:
     burst_gap_s: TBD        # source (to measure): net_event.measure -> uplink_iat_in_upload (upper tail)
                             #   vs gap_between_uploads_s (lower tail); pick a value separating the two
@@ -24,6 +25,10 @@ net_event:
                             #   RFC 1042) + 1500 (IP MTU, RFC 894) + 8 (CCMP MIC) = 1550 bytes
     min_large_ratio: TBD    # source (to measure): net_event.measure -> fraction of in-upload frames >= large_frame_bytes
     count_retries: true     # retransmitted frames still occupy air time, so they are counted
+  count_rule:               # MPDU counts only (net_event/calibrate.py docstring has the rules)
+    burst_gap_s: TBD        # source (to measure): net_event.calibrate (= rule.burst_gap_s on the same sessions)
+    min_up_mpdus: TBD       # source (to measure): net_event.calibrate, min uplink MPDUs of a calibration upload burst
+    min_up_share: TBD       # source (to measure): net_event.calibrate, uplink share n_up / (n_up + n_down) cut (max F1)
   window_model:
     path: data/models/net_logreg.npz   # produced by: python -m net_event.train
     windows_s: [1, 2, 3, 5, 10]  # source: Lumos (Sharma et al., USENIX Security 2022) Algorithm 1, window set

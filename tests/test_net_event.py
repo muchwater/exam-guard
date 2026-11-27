@@ -94,3 +94,42 @@ def test_count_rule_needs_uplink_dominance():
     evs = CountRuleDetector(burst_gap_s=0.5, min_up_mpdus=100, min_up_share=0.55).run(ps)
     assert len(evs) == 1 and round(evs[0].t_start) == 10
     assert evs[0].features["n_up"] == 200 and evs[0].features["n_down"] == 100
+
+
+def _scope_run(tmp_path):
+    """Two upload-like bursts (t=10, t=20); the second is labelled as made during page loads (out of scope)."""
+    import json
+
+    from capture.pcap_io import write_pcap
+    up = []
+    for t0 in (10.0, 20.0):
+        up += [(t0 + i * 0.002, 26, True) for i in range(200)]
+        up += [(t0 + i * 0.004 + 0.001, 26, False) for i in range(100)]
+    frames = []
+    for t, n, u in sorted(up):
+        d, _o = data_frame(n, uplink=u, ta=DEV if u else "02:00:00:00:00:fe", ra="02:00:00:00:00:fe" if u else DEV)
+        frames.append((t, d))
+    write_pcap(tmp_path / "s.pcap", frames)
+    labels = [{"seq": 0, "t_start": 10.0, "t_end": 10.5},
+              {"seq": 1, "t_start": 20.0, "t_end": 20.5, "concurrent": "page_load"}]
+    (tmp_path / "s.labels.jsonl").write_text("".join(json.dumps(r) + "\n" for r in labels))
+    return {"run": "r", "preset": "p", "device": DEV, "pcap": str(tmp_path / "s.pcap"),
+            "labels": str(tmp_path / "s.labels.jsonl")}
+
+
+def test_evaluate_leaves_out_of_scope_uploads_out(tmp_path):
+    from net_event.evaluate import eval_run
+    run = _scope_run(tmp_path)
+    cfg = {"net_event": {"detector": "count_rule",
+                         "count_rule": {"burst_gap_s": 0.5, "min_up_mpdus": 100, "min_up_share": 0.55}}}
+    r = eval_run((cfg, run))
+    assert (r["n_gt"], r["n_hit"], r["n_out_of_scope"], r["n_out_of_scope_hit"], r["n_events"], r["n_false"]) == \
+        (1, 1, 1, 1, 2, 0)
+
+
+def test_calibrate_count_rule_ignores_out_of_scope(tmp_path):
+    from net_event.calibrate import count_bursts, count_rule_params
+    bs = count_bursts(_scope_run(tmp_path), 0.5)
+    assert [(b["upload"], b["out_of_scope"]) for b in bs] == [(True, False), (False, True)]
+    cr = count_rule_params(bs)
+    assert cr["n_uploads"] == 1 and cr["n_candidates"] == 1 and cr["max_share_negative"] is None

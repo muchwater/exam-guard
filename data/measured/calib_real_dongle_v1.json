@@ -20,9 +20,9 @@
   "large_frame_bytes": 26,
   "burst_gap_s": 0.1055610179901123,
   "min_burst_bytes": 2338,
-  "min_large_ratio": 0.9468085106382979,
+  "min_large_ratio": 0.956989247311828,
   "n_large_min": 89,
-  "n_small_max": 5,
+  "n_small_max": 4,
   "min_gap_between_uploads_s": 13.507518768310547,
   "gap_separates_uploads": true
  },
@@ -32,13 +32,13 @@
   "min_up_share": 0.5923566878980892,
   "calib_at_threshold": {
    "precision": 1.0,
-   "recall": 0.8571428571428571,
-   "f1": 0.923076923076923
+   "recall": 1.0,
+   "f1": 1.0
   },
   "n_bursts": 352,
-  "n_candidates": 36,
-  "n_uploads": 28,
-  "min_share_carrying": 0.25586863977295765,
+  "n_candidates": 32,
+  "n_uploads": 24,
+  "min_share_carrying": 0.5923566878980892,
   "max_share_negative": 0.4527972027972028
  },
  "per_run": [
@@ -68,7 +68,7 @@
    "median_size_in_upload": 26.0,
    "max_iat_in_upload": 0.1055610179901123,
    "min_gap_between_uploads": 15.382223129272461,
-   "n_uploads": 10
+   "n_uploads": 6
   }
  ],
  "per_upload_burst": [
@@ -285,42 +285,6 @@
    "bytes": 7358,
    "large_ratio": 1.0,
    "n_large": 283,
-   "n_small": 0,
-   "n_bursts_overlapping": 1
-  },
-  {
-   "run": "dongle_calib1/seg3",
-   "seq": 24,
-   "bytes": 194504,
-   "large_ratio": 0.9998663280310119,
-   "n_large": 7480,
-   "n_small": 1,
-   "n_bursts_overlapping": 1
-  },
-  {
-   "run": "dongle_calib1/seg3",
-   "seq": 25,
-   "bytes": 163330,
-   "large_ratio": 0.9998408150270615,
-   "n_large": 6281,
-   "n_small": 1,
-   "n_bursts_overlapping": 1
-  },
-  {
-   "run": "dongle_calib1/seg3",
-   "seq": 26,
-   "bytes": 228920,
-   "large_ratio": 0.9994321408290744,
-   "n_large": 8800,
-   "n_small": 5,
-   "n_bursts_overlapping": 1
-  },
-  {
-   "run": "dongle_calib1/seg3",
-   "seq": 27,
-   "bytes": 164086,
-   "large_ratio": 1.0,
-   "n_large": 6311,
    "n_small": 0,
    "n_bursts_overlapping": 1
   }
